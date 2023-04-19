@@ -1,0 +1,67 @@
+{
+  "name": "sl-statistics-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@craco/craco": "^7.0.0",
+    "@testing-library/dom": "^9.0.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.4.0",
+    "@types/node": "^18.14.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "dotenv-run-script": "^0.2.0",
+    "dotenv-webpack": "^8.0.1",
+    "echarts": "^5.4.2",
+    "echarts-for-react": "^3.0.2",
+    "mobx": "^6.9.0",
+    "mobx-react-lite": "^3.4.3",
+    "primeflex": "^3.3.0",
+    "primeicons": "^6.0.1",
+    "primereact": "^9.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
+    "sass": "^1.60.0",
+    "typescript": "^5.0.3",
+    "web-vitals": "^3.3.1",
+    "webpack": "^5.77.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.37.0",
+    "eslint-plugin-mobx": "^0.0.9",
+    "openapi-typescript-codegen": "^0.23.0",
+    "prettier": "^2.8.7",
+    "serve": "^14.2.0"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "prod-serve": "craco build && serve -s build",
+    "apigen-internal": "openapi -i $OPENAPI_SPEC -o src/openapi typegen",
+    "apigen": "dotenv-run-script .env .env.defaults -- apigen-internal"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(echarts|primereact/resources/primereact.css|primeicons|primeflex|zrender))"
+    ]
+  },
+  "packageManager": "yarn@3.4.1"
+}

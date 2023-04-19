@@ -1,0 +1,10 @@
+node_modules
+build
+src/openapi
+coverage
+*.yml
+/*.json
+*.config.js
+.yarn
+*.css
+*.scss
