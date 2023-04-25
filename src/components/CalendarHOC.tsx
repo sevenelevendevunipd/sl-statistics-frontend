@@ -1,4 +1,4 @@
-import { CalendarProps, Calendar } from "primereact/calendar";
+import { Calendar, CalendarProps } from "primereact/calendar";
 
 const CalendarHOC = (props: CalendarProps) => {
   return (

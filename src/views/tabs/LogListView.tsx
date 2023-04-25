@@ -1,24 +1,24 @@
+import { observer } from "mobx-react-lite";
 import { Button } from "primereact/button";
+import { Card } from "primereact/card";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
-import { Message } from "primereact/message";
 import { FileUpload } from "primereact/fileupload";
-
-import ILogListStore, { LogListStoreState } from "../stores/LogListStore";
-import { observer } from "mobx-react-lite";
-import { StoredLogList_c682361_StoredLogFile } from "../openapi";
-import { useRootStore } from "../stores/RootStore";
-import { Card } from "primereact/card";
-import BlockUIObserver from "../components/BlockUIObserver";
-import InfoRow from "../components/InfoRow";
+import { Message } from "primereact/message";
 import { Skeleton } from "primereact/skeleton";
-import IFilterStateStore from "../stores/FilterStateStore";
+
+import BlockUIObserver from "../../components/BlockUIObserver";
+import ErrorDialog from "../../components/ErrorDialog";
+import InfoRow from "../../components/InfoRow";
+import RangePicker from "../../components/RangePicker";
+import { StoredLogList_c682361_StoredLogFile } from "../../openapi";
+import IFilterStateStore from "../../stores/FilterStateStore";
+import ILogListStore, { LogListStoreState } from "../../stores/LogListStore";
+import { useRootStore } from "../../stores/RootStore";
 import ISelectedLogsInfoStore, {
   SelectedLogsInfoStoreState,
-} from "../stores/SelectedLogsInfoStore";
-import ErrorDialog from "../components/ErrorDialog";
-import RangePicker from "../components/RangePicker";
+} from "../../stores/SelectedLogsInfoStore";
 
 type ObserverProps = {
   logListStore: ILogListStore;
@@ -165,8 +165,8 @@ const LogListView = () => {
         >
           <RangePicker
             title="Filter by Datetime"
-            minAllowed={() => logListStore.min_timestamp}
-            maxAllowed={() => logListStore.max_timestamp}
+            minAllowed={() => logListStore.minTimestamp}
+            maxAllowed={() => logListStore.maxTimestamp}
             minValue={() => filterStateStore.selected_min_timestamp}
             maxValue={() => filterStateStore.selected_max_timestamp}
             onMinChange={filterStateStore.setMinTimestamp}

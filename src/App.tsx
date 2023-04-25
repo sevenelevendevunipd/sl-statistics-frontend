@@ -1,9 +1,9 @@
-import "./themes/theme.scss";
-import "primereact/resources/primereact.css";
-import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.css";
+import "./themes/theme.scss";
 
-import { ThemeSwitcher, ThemeProvider } from "./components/ThemeSwitcher";
+import { ThemeProvider, ThemeSwitcher } from "./components/ThemeSwitcher";
 import { ReactComponent as Logo } from "./logo.svg";
 import RootStoreProvider from "./stores/RootStore";
 import MainView from "./views/MainView";

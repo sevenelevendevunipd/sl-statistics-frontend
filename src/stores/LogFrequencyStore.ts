@@ -1,19 +1,20 @@
 import {
-  makeObservable,
-  observable,
   action,
   computed,
-  runInAction,
+  makeObservable,
+  observable,
   reaction,
+  runInAction,
 } from "mobx";
-import {
-  DefaultService,
-  LogFrequency_baae32a_LogFrequencyEntry,
-} from "../openapi";
-import { MIN_DATE, MAX_DATE, hashUnitSubUnit } from "../utils";
+import { SelectItemOptionsType } from "primereact/selectitem";
 import { TreeCheckboxSelectionKeys } from "primereact/tree";
 import TreeNode from "primereact/treenode";
-import { SelectItemOptionsType } from "primereact/selectitem";
+
+import {
+  LogAggregationAnalysisService,
+  LogFrequency_baae32a_LogFrequencyEntry,
+} from "../openapi";
+import { MAX_DATE, MIN_DATE, hashUnitSubUnit } from "../utils";
 
 export enum LogFrequencyStoreState {
   idle,
@@ -25,11 +26,11 @@ export default interface ILogFrequencyStore {
   state: LogFrequencyStoreState;
   error: string | undefined;
 
-  entry_frequencies: LogFrequency_baae32a_LogFrequencyEntry[];
-  selected_min_timestamp: Date;
-  selected_max_timestamp: Date;
+  entryFrequencies: LogFrequency_baae32a_LogFrequencyEntry[];
+  selectedMinTimestamp: Date;
+  selectedMaxTimestamp: Date;
 
-  selected_subunits: TreeCheckboxSelectionKeys;
+  selectedSubunits: TreeCheckboxSelectionKeys;
 
   setSelectedRange(min: Date, max: Date): void;
   setMinTimestamp(min: Date): void;
@@ -75,21 +76,21 @@ export class LogFrequencyStore implements ILogFrequencyStore {
   state: LogFrequencyStoreState = LogFrequencyStoreState.idle;
   error: string | undefined;
 
-  entry_frequencies: LogFrequency_baae32a_LogFrequencyEntry[] = [];
-  selected_min_timestamp: Date = new Date(MIN_DATE);
-  selected_max_timestamp: Date = new Date(MAX_DATE);
+  entryFrequencies: LogFrequency_baae32a_LogFrequencyEntry[] = [];
+  selectedMinTimestamp: Date = new Date(MIN_DATE);
+  selectedMaxTimestamp: Date = new Date(MAX_DATE);
 
-  selected_subunits: TreeCheckboxSelectionKeys =
+  selectedSubunits: TreeCheckboxSelectionKeys =
     selectAllTreeEntries(allUnitSubunits);
 
   constructor() {
     makeObservable(this, {
       state: observable,
       error: observable,
-      entry_frequencies: observable,
-      selected_min_timestamp: observable,
-      selected_max_timestamp: observable,
-      selected_subunits: observable,
+      entryFrequencies: observable,
+      selectedMinTimestamp: observable,
+      selectedMaxTimestamp: observable,
+      selectedSubunits: observable,
       setSelectedRange: action.bound,
       setMinTimestamp: action.bound,
       setMaxTimestamp: action.bound,
@@ -102,8 +103,8 @@ export class LogFrequencyStore implements ILogFrequencyStore {
     });
     reaction(
       () => [
-        this.selected_min_timestamp,
-        this.selected_max_timestamp,
+        this.selectedMinTimestamp,
+        this.selectedMaxTimestamp,
         this.selectedSubunitIds,
       ],
       this.updateFrequencies
@@ -111,34 +112,34 @@ export class LogFrequencyStore implements ILogFrequencyStore {
   }
 
   setSelectedRange(min: Date, max: Date) {
-    this.selected_min_timestamp = min;
-    this.selected_max_timestamp = max;
+    this.selectedMinTimestamp = min;
+    this.selectedMaxTimestamp = max;
   }
 
   setMinTimestamp(min: Date) {
-    this.selected_min_timestamp = min;
+    this.selectedMinTimestamp = min;
   }
 
   setMaxTimestamp(max: Date) {
-    this.selected_max_timestamp = max;
+    this.selectedMaxTimestamp = max;
   }
 
   setSubunitSelection(selection: TreeCheckboxSelectionKeys) {
-    this.selected_subunits = selection;
+    this.selectedSubunits = selection;
   }
 
   updateFrequencies() {
     this.error = undefined;
     this.state = LogFrequencyStoreState.waiting;
-    DefaultService.postApiFrequency({
-      start: this.selected_min_timestamp.toISOString(),
-      end: this.selected_max_timestamp.toISOString(),
+    LogAggregationAnalysisService.postApiFrequency({
+      start: this.selectedMinTimestamp.toISOString(),
+      end: this.selectedMaxTimestamp.toISOString(),
       selected_subunits: this.selectedSubunitIds,
     }).then(
       (value) => {
         runInAction(() => {
           this.state = LogFrequencyStoreState.idle;
-          this.entry_frequencies = value.entries;
+          this.entryFrequencies = value.entries;
         });
       },
       (error) => {
@@ -156,7 +157,7 @@ export class LogFrequencyStore implements ILogFrequencyStore {
   }
 
   get firmwares() {
-    return [...new Set(this.entry_frequencies.map((v) => v.firmware))].sort();
+    return [...new Set(this.entryFrequencies.map((v) => v.firmware))].sort();
   }
 
   get firmwareFilter() {
@@ -165,7 +166,7 @@ export class LogFrequencyStore implements ILogFrequencyStore {
 
   get selectedSubunitIds() {
     return [
-      ...Object.keys(this.selected_subunits)
+      ...Object.keys(this.selectedSubunits)
         .filter((k) => k.startsWith("s"))
         .map((k) => parseInt(k.substring(1))),
     ];

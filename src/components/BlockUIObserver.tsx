@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { BlockUIProps, BlockUI } from "primereact/blockui";
+import { BlockUI, BlockUIProps } from "primereact/blockui";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PropsWithChildren } from "react";
 

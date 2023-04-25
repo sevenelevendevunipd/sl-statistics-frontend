@@ -1,15 +1,16 @@
 import { observer } from "mobx-react-lite";
-import { useRootStore } from "../stores/RootStore";
+import { Card } from "primereact/card";
+import { Column, ColumnFilterElementTemplateOptions } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { ScrollPanel } from "primereact/scrollpanel";
 import { MultiSelect } from "primereact/multiselect";
+import { ScrollPanel } from "primereact/scrollpanel";
 import { Tree, TreeCheckboxSelectionKeys } from "primereact/tree";
+
+import RangePicker from "../../components/RangePicker";
 import ILogFrequencyStore, {
   allUnitSubunits,
-} from "../stores/LogFrequencyStore";
-import { Column, ColumnFilterElementTemplateOptions } from "primereact/column";
-import { Card } from "primereact/card";
-import RangePicker from "../components/RangePicker";
+} from "../../stores/LogFrequencyStore";
+import { useRootStore } from "../../stores/RootStore";
 
 const TableObserver = observer(
   ({ logFrequencyStore }: { logFrequencyStore: ILogFrequencyStore }) => {
@@ -25,13 +26,12 @@ const TableObserver = observer(
         maxSelectedLabels={1}
         itemTemplate={(i) => i}
         selectedItemTemplate={(i) => i}
-        //style={{ minWidth: "14rem" }}
       />
     );
 
     return (
       <DataTable
-        value={logFrequencyStore.entry_frequencies}
+        value={logFrequencyStore.entryFrequencies}
         removableSort
         sortField="count"
         sortOrder={-1}
@@ -66,7 +66,7 @@ const SubunitTreeObserver = observer(
       <Tree
         selectionMode="checkbox"
         value={allUnitSubunits}
-        selectionKeys={logFrequencyStore.selected_subunits}
+        selectionKeys={logFrequencyStore.selectedSubunits}
         onSelectionChange={(ev) =>
           logFrequencyStore.setSubunitSelection(
             ev.value as TreeCheckboxSelectionKeys
@@ -98,8 +98,8 @@ const LogFrequencyView = () => {
             title="Filter by Datetime"
             minAllowed={() => filterStateStore.selected_min_timestamp}
             maxAllowed={() => filterStateStore.selected_max_timestamp}
-            minValue={() => logFrequencyStore.selected_min_timestamp}
-            maxValue={() => logFrequencyStore.selected_max_timestamp}
+            minValue={() => logFrequencyStore.selectedMinTimestamp}
+            maxValue={() => logFrequencyStore.selectedMaxTimestamp}
             onMinChange={logFrequencyStore.setMinTimestamp}
             onMaxChange={logFrequencyStore.setMaxTimestamp}
             className="flex-grow-1"

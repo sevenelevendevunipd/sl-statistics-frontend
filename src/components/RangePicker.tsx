@@ -1,8 +1,9 @@
-import { useId } from "react";
-import CalendarHOC from "./CalendarHOC";
 import { observer } from "mobx-react-lite";
-import { max, min } from "../utils";
 import { Card } from "primereact/card";
+import { useId } from "react";
+
+import { max, min } from "../utils";
+import CalendarHOC from "./CalendarHOC";
 
 const MinCalendar = observer(
   ({

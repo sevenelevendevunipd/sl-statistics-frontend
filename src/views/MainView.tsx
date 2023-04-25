@@ -1,12 +1,14 @@
-import { TabView, TabPanel } from "primereact/tabview";
+import { TabPanel, TabView } from "primereact/tabview";
 
-import LogListView from "./LogListView";
-import { useRootStore } from "../stores/RootStore";
 import { observer } from "mobx-react-lite";
-import ILogListStore from "../stores/LogListStore";
 import { useEffect } from "react";
+import ILogListStore from "../stores/LogListStore";
+import { useRootStore } from "../stores/RootStore";
 import ISelectedLogsInfoStore from "../stores/SelectedLogsInfoStore";
-import LogFrequencyView from "./LogFrequencyView";
+import LogFrequencyView from "./tabs/LogFrequencyView";
+import LogListView from "./tabs/LogListView";
+import TimeChartView from "./tabs/TimeChartView";
+import FirmwareChartView from "./tabs/FirmwareChartView";
 
 type ObserverProps = {
   logListStore: ILogListStore;
@@ -35,11 +37,18 @@ const EmptyLogListObserver = observer(
           <LogFrequencyView />
         </TabPanel>
         <TabPanel
-          header="Visualize"
+          header="Time/Occurences Chart"
           leftIcon="pi pi-chart-bar mr-2"
           disabled={disableTabs}
         >
-          <h1>TODO: add charts</h1>
+          <TimeChartView />
+        </TabPanel>
+        <TabPanel
+          header="Firmware/Occurences Chart"
+          leftIcon="pi pi-chart-bar mr-2"
+          disabled={disableTabs}
+        >
+          <FirmwareChartView />
         </TabPanel>
       </TabView>
     );

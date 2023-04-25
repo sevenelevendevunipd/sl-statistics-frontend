@@ -1,13 +1,14 @@
 import {
+  action,
+  computed,
   makeObservable,
   observable,
-  action,
   runInAction,
-  computed,
 } from "mobx";
+
 import {
   ApiError,
-  DefaultService,
+  LogFileManagementService,
   StoredLogList_c682361_StoredLogFile,
 } from "../openapi";
 import { MAX_DATE, MIN_DATE } from "../utils";
@@ -24,8 +25,8 @@ export enum LogListStoreState {
 export default interface ILogListStore {
   state: LogListStoreState;
   logs: StoredLogFile[];
-  min_timestamp: Date;
-  max_timestamp: Date;
+  minTimestamp: Date;
+  maxTimestamp: Date;
   error: string | undefined;
 
   updateLogList(): void;
@@ -53,16 +54,16 @@ function reprError(err: unknown): string {
 export class LogListStore implements ILogListStore {
   state: LogListStoreState = LogListStoreState.idle;
   logs: StoredLogFile[] = [];
-  min_timestamp: Date = new Date(MIN_DATE);
-  max_timestamp: Date = new Date(MAX_DATE);
+  minTimestamp: Date = new Date(MIN_DATE);
+  maxTimestamp: Date = new Date(MAX_DATE);
   error: string | undefined = undefined;
 
   constructor() {
     makeObservable(this, {
       state: observable,
       logs: observable,
-      min_timestamp: observable,
-      max_timestamp: observable,
+      minTimestamp: observable,
+      maxTimestamp: observable,
       error: observable,
       throwError: false,
       updateLogList: action.bound,
@@ -85,13 +86,13 @@ export class LogListStore implements ILogListStore {
   updateLogList() {
     this.error = undefined;
     this.state = LogListStoreState.waiting;
-    DefaultService.getApiLogList().then(
+    LogFileManagementService.getApiLogList().then(
       (value) => {
         runInAction(() => {
           this.state = LogListStoreState.idle;
           this.logs = value.log_files;
-          this.min_timestamp = new Date(value.min_timestamp);
-          this.max_timestamp = new Date(value.max_timestamp);
+          this.minTimestamp = new Date(value.min_timestamp);
+          this.maxTimestamp = new Date(value.max_timestamp);
         });
       },
       (err) => {
@@ -104,14 +105,17 @@ export class LogListStore implements ILogListStore {
   }
 
   uploadLogFile(log: File) {
-    DefaultService.putApiLog({ log }).then(this.updateLogList, (err) => {
-      this.throwError(`Error while uploading log file: ${reprError(err)}`);
-    });
+    LogFileManagementService.putApiLog({ log }).then(
+      this.updateLogList,
+      (err) => {
+        this.throwError(`Error while uploading log file: ${reprError(err)}`);
+      }
+    );
   }
 
   deleteLogFile(name: string) {
     this.state = LogListStoreState.waiting;
-    DefaultService.deleteApiLog({ log: name }).then(
+    LogFileManagementService.deleteApiLog({ log: name }).then(
       this.updateLogList,
       (err) => {
         this.throwError(`Error while deleting log file: ${reprError(err)}`);

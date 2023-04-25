@@ -5,7 +5,8 @@ import {
   observable,
   runInAction,
 } from "mobx";
-import { DefaultService, LogOverview_91de17a } from "../openapi";
+
+import { LogAggregationAnalysisService, LogOverview_91de17a } from "../openapi";
 
 export enum SelectedLogsInfoStoreState {
   idle,
@@ -44,7 +45,10 @@ export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
   updateOverview(start: Date, end: Date) {
     this.error = undefined;
     this.state = SelectedLogsInfoStoreState.loading;
-    DefaultService.getApiOverview(start.toISOString(), end.toISOString()).then(
+    LogAggregationAnalysisService.getApiOverview(
+      start.toISOString(),
+      end.toISOString()
+    ).then(
       (value) => {
         runInAction(() => {
           this.state = SelectedLogsInfoStoreState.idle;

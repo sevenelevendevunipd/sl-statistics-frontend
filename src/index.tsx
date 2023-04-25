@@ -1,8 +1,8 @@
+import { configure } from "mobx";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { OpenAPI } from "./openapi";
-import { configure } from "mobx";
 
 configure({
   enforceActions: "always",

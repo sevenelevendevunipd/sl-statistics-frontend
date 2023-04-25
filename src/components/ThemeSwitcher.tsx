@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
 import * as echarts from "echarts";
 import { InputSwitch } from "primereact/inputswitch";
+import { createContext, useContext, useEffect, useState } from "react";
+
 import echartsDarkTheme from "../themes/dark.json";
 import echartsLightTheme from "../themes/light.json";
 
@@ -59,6 +60,14 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       {children}
     </ThemeContext.Provider>
   );
+}
+
+export function useThemeName() {
+  const themeContext = useContext(ThemeContext);
+  if (themeContext == undefined) {
+    throw new Error("useThemeName used outside ThemeProvider");
+  }
+  return themeContext[0];
 }
 
 export function ThemeSwitcher(): JSX.Element {

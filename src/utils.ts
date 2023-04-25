@@ -45,3 +45,7 @@ export const MIN_DATE = new Date(-8640000000000000);
 export function hashUnitSubUnit(unit: number, subunit: number) {
   return (unit << 4) | subunit;
 }
+
+export function splitUnitSubUnitHash(hash: number): [number, number] {
+  return [hash >> 4, hash & 0xf];
+}

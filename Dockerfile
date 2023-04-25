@@ -1,4 +1,4 @@
-FROM node:alpine AS builder
+FROM --platform=$BUILDPLATFORM node:alpine AS builder
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn .yarn
