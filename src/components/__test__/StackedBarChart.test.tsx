@@ -3,7 +3,6 @@ import StackedBarChart from "../StackedBarChart";
 import { useThemeName } from "../ThemeSwitcher";
 import MainView from "../../views/MainView";
 
-//const useThemeName = jest.fn();
 jest.mock("../ThemeSwitcher", () => ({
     useThemeName: jest.fn(),
 }));
@@ -16,7 +15,6 @@ describe("StackedBarChart component", () => {
     ];
 
     beforeEach(() => {
-        //useThemeName.mockReturnValue("dark");
         (useThemeName as jest.Mock).mockReturnValue("dark");
     });
 
