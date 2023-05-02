@@ -1,5 +1,5 @@
 .dark {
-  @import "dark";
+  @import "../../node_modules/primereact/resources/themes/lara-dark-teal/theme";
 
   // https://github.com/sass/dart-sass/issues/1883
   --surface-a:#071426;
@@ -51,7 +51,7 @@
 }
 
 .light {
-  @import "light";
+  @import "../../node_modules/primereact/resources/themes/lara-light-teal/theme";
 
   --surface-a:#ffffff;
   --surface-b:#f8f9fa;
