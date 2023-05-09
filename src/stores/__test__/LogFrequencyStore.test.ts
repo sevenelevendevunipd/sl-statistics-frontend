@@ -91,16 +91,4 @@ describe("LogFrequencyStore", () => {
 
     expect(store.hasError).toBe(true);
   });
-
-//   it("should compute the correct list of firmwares", () => {
-//     store.entryFrequencies = [      { firmware: "1.2.3", entries: [] },
-//       { firmware: "1.2.4", entries: [] },
-//       { firmware: "1.2.3", entries: [] },
-//     ];
-//     const expected = ["1.2.3", "1.2.4"];
-
-//     expect(store.firmwares).toEqual(expected);
-//   });
-
-//   
 });

@@ -53,34 +53,6 @@ describe("ChartFilterStore", () => {
           done();
         }, 0);
       }
-      
-    //   it("handles ApiErrors", done => {
-    //     const error = new ApiError({
-    //       method: "GET",
-    //       url: "",
-    //     }, {
-    //       url: "",
-    //       ok: false,
-    //       status: 400,
-    //       statusText: "Bad Request",
-    //       body: {
-    //         errors: [
-    //           errorText
-    //         ]
-    //       }
-    //     }, "");
-    //     testError(error, done)
-    //   });
-
-    //   it("handles TypeErrors", done => {
-    //     const error = new TypeError(errorText);
-    //     testError(error, done);
-    //   });
-
-    //   it("handles other errors", done => {
-    //     const error = new Error(errorText);
-    //     testError(error, done);
-    //   });
     });
   });
 });
