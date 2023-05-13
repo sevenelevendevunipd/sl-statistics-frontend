@@ -49,6 +49,7 @@ describe("LogListStore", () => {
     });
     describe("handles errors", () => {
       const errorText = "sampleerrortext";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testError = (error: any, done: jest.DoneCallback) => {
         reaction(
           () => logListStore.state,

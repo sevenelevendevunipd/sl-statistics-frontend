@@ -47,6 +47,7 @@ describe("ChartFilterStore", () => {
     describe("handles errors", () => {
       const errorText = "sampleerrortext";
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
       const testError = (error: any, done: jest.DoneCallback) => {
         getApiChartsFiltersSpy.mockRejectedValueOnce(error);
 
