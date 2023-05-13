@@ -1,4 +1,4 @@
-import { FilterStateStore } from '../FilterStateStore';
+import { FilterStateStore } from "../FilterStateStore";
 
 describe("FilterStateStore", () => {
   let filterStateStore: FilterStateStore;

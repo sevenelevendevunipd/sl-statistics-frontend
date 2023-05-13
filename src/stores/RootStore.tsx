@@ -149,7 +149,7 @@ export class RootStore {
 }
 
 const RootStoreContext = createContext<RootStore | undefined>(undefined);
-type RootStoreProviderProps = PropsWithChildren & {rootStore?:RootStore};
+type RootStoreProviderProps = PropsWithChildren & { rootStore?: RootStore };
 
 const RootStoreProvider = (props: RootStoreProviderProps) => {
   return (

@@ -1,6 +1,9 @@
-import { LogFrequencyStore, LogFrequencyStoreState } from '../LogFrequencyStore';
-import { ApiError, LogAggregationAnalysisService } from '../../openapi';
-import { MAX_DATE, MIN_DATE } from '../../utils';
+import {
+  LogFrequencyStore,
+  LogFrequencyStoreState,
+} from "../LogFrequencyStore";
+import { ApiError, LogAggregationAnalysisService } from "../../openapi";
+import { MAX_DATE, MIN_DATE } from "../../utils";
 
 describe("LogFrequencyStore", () => {
   let store: LogFrequencyStore;
@@ -53,15 +56,17 @@ describe("LogFrequencyStore", () => {
   });
 
   it("should update the entry frequencies correctly", async () => {
-    const entry = [{
-              firmware: "1.2.3",
-              event_code: "S009",
-              count: 5
-    }]
+    const entry = [
+      {
+        firmware: "1.2.3",
+        event_code: "S009",
+        count: 5,
+      },
+    ];
 
     jest
       .spyOn(LogAggregationAnalysisService, "postApiFrequency")
-       .mockResolvedValue({ entries: entry });
+      .mockResolvedValue({ entries: entry });
 
     await store.updateFrequencies();
 
@@ -71,21 +76,21 @@ describe("LogFrequencyStore", () => {
   it("should handle errors when updating the entry frequencies", async () => {
     jest
       .spyOn(LogAggregationAnalysisService, "postApiFrequency")
-       .mockRejectedValue(new ApiError(
-              { method: "PUT",
-                url: "" }, 
-              { url: "",
-                ok: false,
-                status: 400,
-                statusText: "Bad Request",
-                body: {
-                    errors: [
-                        "sampleerrortext"
-                    ]
-                }
-              }, 
-              "")
-          );
+      .mockRejectedValue(
+        new ApiError(
+          { method: "PUT", url: "" },
+          {
+            url: "",
+            ok: false,
+            status: 400,
+            statusText: "Bad Request",
+            body: {
+              errors: ["sampleerrortext"],
+            },
+          },
+          ""
+        )
+      );
 
     await store.updateFrequencies();
 

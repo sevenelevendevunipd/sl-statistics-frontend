@@ -1,26 +1,31 @@
-import { SelectedLogsInfoStore, SelectedLogsInfoStoreState } from '../SelectedLogsInfoStore';
-import { LogAggregationAnalysisService } from '../../openapi';
+import {
+  SelectedLogsInfoStore,
+  SelectedLogsInfoStoreState,
+} from "../SelectedLogsInfoStore";
+import { LogAggregationAnalysisService } from "../../openapi";
 
-describe('SelectedLogsInfoStore', () => {
+describe("SelectedLogsInfoStore", () => {
   let store: SelectedLogsInfoStore;
-  const getApiOverviewSpy = jest.spyOn(LogAggregationAnalysisService, 'getApiOverview');
+  const getApiOverviewSpy = jest.spyOn(
+    LogAggregationAnalysisService,
+    "getApiOverview"
+  );
 
   beforeEach(() => {
     store = new SelectedLogsInfoStore();
   });
 
-  describe('updateOverview', () => {
-    it('updates successfully', async () => {
-
+  describe("updateOverview", () => {
+    it("updates successfully", async () => {
       const mockValue = {
         total_entries: 420,
         avg_entries: 317,
         max_count_entry: {
-                filename: "file1",
-                entry_count: 12
+          filename: "file1",
+          entry_count: 12,
         },
-        entries_std_dev: 6
-      }
+        entries_std_dev: 6,
+      };
       getApiOverviewSpy.mockResolvedValue(mockValue);
 
       expect(store.state).toEqual(SelectedLogsInfoStoreState.idle);
@@ -36,8 +41,8 @@ describe('SelectedLogsInfoStore', () => {
       expect(store.info).toEqual(mockValue);
     });
 
-    it('handles errors', async () => {
-      const mockError = new Error('An error occurred');
+    it("handles errors", async () => {
+      const mockError = new Error("An error occurred");
       getApiOverviewSpy.mockRejectedValue(mockError);
 
       expect(store.state).toEqual(SelectedLogsInfoStoreState.idle);
