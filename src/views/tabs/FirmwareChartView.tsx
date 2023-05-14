@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Card } from "primereact/card";
 import { ListBox } from "primereact/listbox";
 
+import ErrorDialog from "../../components/ErrorDialog";
 import StackedBarChart from "../../components/StackedBarChart";
 import IChartFilterStore from "../../stores/ChartFilterStore";
 import { useRootStore } from "../../stores/RootStore";
@@ -62,10 +63,20 @@ const FirmwareSelectionObserver = observer(
   }
 );
 
+const ErrorDialogObserver = observer(
+  ({ chartFilterStore }: ChartStore) => (
+    <ErrorDialog 
+      shouldBeVisible={() => chartFilterStore.hasError}
+      canBeRetried={false}
+      error={() => chartFilterStore.error}
+    />)
+)
+
 const FirmwareChartView = () => {
   const rootStore = useRootStore();
   return (
     <div className="grid">
+      <ErrorDialogObserver {...rootStore} />
       <div className="col-6">
         <Card title="Filter by Firmware" className="m-2">
           <FirmwareSelectionObserver {...rootStore} />

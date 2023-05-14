@@ -6,7 +6,7 @@ import {
   runInAction,
 } from "mobx";
 
-import { LogAggregationAnalysisService, LogOverview_91de17a } from "../openapi";
+import { ApiError, LogAggregationAnalysisService, LogOverview_91de17a } from "../openapi";
 
 export enum SelectedLogsInfoStoreState {
   idle,
@@ -26,6 +26,20 @@ export default interface ISelectedLogsInfoStore {
   get hasError(): boolean;
 }
 
+function reprError(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.body.errors instanceof Array) {
+      return err.body.errors.join("\n");
+    } else {
+      return JSON.stringify(err.body);
+    }
+  } else if (err instanceof TypeError) {
+    return err.message;
+  } else {
+    return `${err}`;
+  }
+}
+
 export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
   state: State = SelectedLogsInfoStoreState.idle;
   error: string | undefined = undefined;
@@ -39,6 +53,13 @@ export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
       info: observable,
       updateOverview: action.bound,
       hasError: computed,
+    });
+  }
+
+  throwError(err: string) {
+    runInAction(() => {
+      this.state = SelectedLogsInfoStoreState.error;
+      this.error = err;
     });
   }
 
@@ -57,9 +78,11 @@ export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
       },
       (error) => {
         runInAction(() => {
-          this.state = SelectedLogsInfoStoreState.error;
+          this.throwError(
+            `Error while getting log file list: ${reprError(error)}`
+          );
         });
-        //TODO: handle errors.
+        //TODO: Controllare gli handle errors.
         console.log(error);
       }
     );

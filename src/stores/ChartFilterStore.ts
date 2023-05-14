@@ -1,6 +1,6 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
 
-import { ChartsService } from "../openapi";
+import { ApiError, ChartsService } from "../openapi";
 enum ChartFilterStoreState {
   idle,
   waiting,
@@ -16,6 +16,21 @@ export default interface IChartFilterStore {
   selectableFirmwares: string[];
 
   update(start: Date, end: Date): void;
+  get hasError(): boolean;
+}
+
+function reprError(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.body.errors instanceof Array) {
+      return err.body.errors.join("\n");
+    } else {
+      return JSON.stringify(err.body);
+    }
+  } else if (err instanceof TypeError) {
+    return err.message;
+  } else {
+    return `${err}`;
+  }
 }
 
 export class ChartFilterStore implements IChartFilterStore {
@@ -37,6 +52,13 @@ export class ChartFilterStore implements IChartFilterStore {
     });
   }
 
+  throwError(err: string) {
+    runInAction(() => {
+      this.state = ChartFilterStoreState.error;
+      this.error = err;
+    });
+  }
+
   update(start: Date, end: Date): void {
     this.state = ChartFilterStoreState.waiting;
     this.error = undefined;
@@ -54,10 +76,16 @@ export class ChartFilterStore implements IChartFilterStore {
       },
       (err) => {
         runInAction(() => {
-          this.state = ChartFilterStoreState.error;
+          this.throwError(
+            `Error while getting log file list: ${reprError(err)}`
+          );
         });
-        console.error(err); //TODO: handle errors
+        console.error(err); //TODO: Controllare gli handle errors
       }
     );
+  }
+
+  get hasError() {
+    return this.state == ChartFilterStoreState.error;
   }
 }
