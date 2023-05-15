@@ -9,7 +9,7 @@ import { TreeCheckboxSelectionKeys } from "primereact/tree";
 
 import { ChartsService } from "../openapi";
 
-enum TimeChartStoreState {
+export enum TimeChartStoreState {
   idle,
   waiting,
   error,
@@ -71,11 +71,13 @@ export class TimeChartDataStore implements ITimeChartDataStore {
       (err) => {
         runInAction(() => {
           this.state = TimeChartStoreState.error;
+          //TODO: gestione errori
         });
         console.error(err);
       }
     );
   }
+
   get selectedSubUnitsList() {
     return [
       ...Object.keys(this.selectedSubUnits)
