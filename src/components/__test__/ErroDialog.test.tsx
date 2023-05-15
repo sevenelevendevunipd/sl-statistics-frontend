@@ -17,7 +17,7 @@ describe("ErrorDialog", () => {
       <ErrorDialog
         shouldBeVisible={shouldBeVisible}
         error={() => errorMessage}
-        canBeRetried= {true}
+        canBeRetried={true}
         onClose={onClose}
       />
     );

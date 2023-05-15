@@ -6,6 +6,6 @@ describe("InfoRow", () => {
     const caption = "Example Caption";
     const value = () => undefined;
     render(<InfoRow caption={caption} value={value} />);
-    expect(screen.getByText('Example Caption')).toBeInTheDocument();
+    expect(screen.getByText("Example Caption")).toBeInTheDocument();
   });
 });
