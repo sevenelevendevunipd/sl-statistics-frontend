@@ -63,14 +63,13 @@ const FirmwareSelectionObserver = observer(
   }
 );
 
-const ErrorDialogObserver = observer(
-  ({ chartFilterStore }: ChartStore) => (
-    <ErrorDialog 
-      shouldBeVisible={() => chartFilterStore.hasError}
-      canBeRetried={false}
-      error={() => chartFilterStore.error}
-    />)
-)
+const ErrorDialogObserver = observer(({ chartFilterStore }: ChartStore) => (
+  <ErrorDialog
+    shouldBeVisible={() => chartFilterStore.hasError}
+    canBeRetried={false}
+    error={() => chartFilterStore.error}
+  />
+));
 
 const FirmwareChartView = () => {
   const rootStore = useRootStore();

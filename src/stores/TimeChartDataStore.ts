@@ -60,16 +60,16 @@ export class TimeChartDataStore implements ITimeChartDataStore {
       selectedCodes: observable,
       selectedSubUnits: observable,
       data: observable,
+      throwError: action.bound,
       update: action.bound,
       selectedSubUnitsList: computed,
+      hasError: computed,
     });
   }
 
   throwError(err: string) {
-    runInAction(() => {
-      this.state = TimeChartStoreState.error;
-      this.error = err;
-    });
+    this.state = TimeChartStoreState.error;
+    this.error = err;
   }
 
   update(start: Date, end: Date, allSubunits: number[]) {

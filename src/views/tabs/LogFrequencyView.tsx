@@ -80,12 +80,13 @@ const SubunitTreeObserver = observer(
 
 const ErrorDialogObserver = observer(
   ({ logFrequencyStore }: { logFrequencyStore: ILogFrequencyStore }) => (
-    <ErrorDialog 
+    <ErrorDialog
       shouldBeVisible={() => logFrequencyStore.hasError}
       canBeRetried={false}
       error={() => logFrequencyStore.error}
-    />)
-)
+    />
+  )
+);
 
 const LogFrequencyView = () => {
   const rootStore = useRootStore();

@@ -65,7 +65,7 @@ export class LogListStore implements ILogListStore {
       minTimestamp: observable,
       maxTimestamp: observable,
       error: observable,
-      throwError: false,
+      throwError: action.bound,
       updateLogList: action.bound,
       uploadLogFile: action.bound,
       deleteLogFile: action.bound,
@@ -76,12 +76,10 @@ export class LogListStore implements ILogListStore {
   }
 
   throwError(err: string, retryable = false) {
-    runInAction(() => {
-      this.state = retryable
-        ? LogListStoreState.retryableError
-        : LogListStoreState.error;
-      this.error = err;
-    });
+    this.state = retryable
+      ? LogListStoreState.retryableError
+      : LogListStoreState.error;
+    this.error = err;
   }
   updateLogList() {
     this.error = undefined;

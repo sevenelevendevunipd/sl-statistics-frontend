@@ -6,7 +6,11 @@ import {
   runInAction,
 } from "mobx";
 
-import { ApiError, LogAggregationAnalysisService, LogOverview_91de17a } from "../openapi";
+import {
+  ApiError,
+  LogAggregationAnalysisService,
+  LogOverview_91de17a,
+} from "../openapi";
 
 export enum SelectedLogsInfoStoreState {
   idle,
@@ -51,16 +55,15 @@ export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
       state: observable,
       error: observable,
       info: observable,
+      throwError: action.bound,
       updateOverview: action.bound,
       hasError: computed,
     });
   }
 
   throwError(err: string) {
-    runInAction(() => {
-      this.state = SelectedLogsInfoStoreState.error;
-      this.error = err;
-    });
+    this.state = SelectedLogsInfoStoreState.error;
+    this.error = err;
   }
 
   updateOverview(start: Date, end: Date) {

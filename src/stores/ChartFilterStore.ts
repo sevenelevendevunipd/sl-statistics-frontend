@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
 
 import { ApiError, ChartsService } from "../openapi";
 enum ChartFilterStoreState {
@@ -43,20 +43,20 @@ export class ChartFilterStore implements IChartFilterStore {
 
   constructor() {
     makeObservable(this, {
+      throwError: action.bound,
       state: observable,
       error: observable,
       selectableCodes: observable,
       selectableSubunits: observable,
       selectableFirmwares: observable,
       update: action,
+      hasError: computed,
     });
   }
 
   throwError(err: string) {
-    runInAction(() => {
-      this.state = ChartFilterStoreState.error;
-      this.error = err;
-    });
+    this.state = ChartFilterStoreState.error;
+    this.error = err;
   }
 
   update(start: Date, end: Date): void {

@@ -73,12 +73,15 @@ const CodeSelectionObserver = observer(
 
 const ErrorDialogObserver = observer(
   ({ timeChartDataStore, chartFilterStore }: ChartStore) => (
-    <ErrorDialog 
-      shouldBeVisible={() => timeChartDataStore.hasError || chartFilterStore.hasError}
+    <ErrorDialog
+      shouldBeVisible={() =>
+        timeChartDataStore.hasError || chartFilterStore.hasError
+      }
       canBeRetried={false}
       error={() => timeChartDataStore.error || chartFilterStore.error}
-    />)
-)
+    />
+  )
+);
 
 const TimeChartView = () => {
   const rootStore = useRootStore();

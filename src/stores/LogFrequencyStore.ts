@@ -11,7 +11,7 @@ import { TreeCheckboxSelectionKeys } from "primereact/tree";
 import TreeNode from "primereact/treenode";
 
 import {
-  ApiError, 
+  ApiError,
   LogAggregationAnalysisService,
   LogFrequency_baae32a_LogFrequencyEntry,
 } from "../openapi";
@@ -106,6 +106,7 @@ export class LogFrequencyStore implements ILogFrequencyStore {
       selectedMinTimestamp: observable,
       selectedMaxTimestamp: observable,
       selectedSubunits: observable,
+      throwError: action.bound,
       setSelectedRange: action.bound,
       setMinTimestamp: action.bound,
       setMaxTimestamp: action.bound,
@@ -127,10 +128,8 @@ export class LogFrequencyStore implements ILogFrequencyStore {
   }
 
   throwError(err: string) {
-    runInAction(() => {
-      this.state = LogFrequencyStoreState.error;
-      this.error = err;
-    });
+    this.state = LogFrequencyStoreState.error;
+    this.error = err;
   }
 
   setSelectedRange(min: Date, max: Date) {
