@@ -80,7 +80,6 @@ export class ChartFilterStore implements IChartFilterStore {
             `Error while getting log file list: ${reprError(err)}`
           );
         });
-        console.error(err); //TODO: Controllare gli handle errors
       }
     );
   }

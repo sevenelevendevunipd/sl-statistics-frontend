@@ -85,8 +85,6 @@ export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
             `Error while getting log file list: ${reprError(error)}`
           );
         });
-        //TODO: Controllare gli handle errors.
-        console.log(error);
       }
     );
   }

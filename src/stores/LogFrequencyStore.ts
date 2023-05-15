@@ -169,8 +169,6 @@ export class LogFrequencyStore implements ILogFrequencyStore {
             `Error while getting log file list: ${reprError(error)}`
           );
         });
-        //TODO: Controlla gli handle errors.
-        console.log(error);
       }
     );
   }

@@ -62,7 +62,7 @@ export class FirmwareChartDataStore implements IFirmwareChartDataStore {
         runInAction(() => {
           this.state = FirmwareChartStoreState.error;
         });
-        console.error(err);
+        console.error(err); //TODO: handle
       }
     );
   }

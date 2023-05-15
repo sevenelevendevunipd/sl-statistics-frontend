@@ -95,9 +95,7 @@ export class TimeChartDataStore implements ITimeChartDataStore {
           this.throwError(
             `Error while getting log file list: ${reprError(err)}`
           );
-          //TODO: Controlla i gestione errori
         });
-        console.error(err);
       }
     );
   }
