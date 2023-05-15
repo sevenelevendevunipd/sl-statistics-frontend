@@ -12,7 +12,6 @@
     "@types/node": "^18.14.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "canvas": "^2.11.2",
     "dotenv-run-script": "^0.2.0",
     "dotenv-webpack": "^8.0.1",
     "echarts": "^5.4.2",
@@ -37,6 +36,7 @@
     "eslint-plugin-mobx": "^0.0.9",
     "openapi-typescript-codegen": "^0.23.0",
     "prettier": "^2.8.7",
+    "canvas": "^2.11.2",
     "serve": "^14.2.0"
   },
   "scripts": {

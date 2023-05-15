@@ -9,7 +9,7 @@ const InfoRow = observer(
     caption: string;
     value: () => string | number | JSX.Element | undefined;
   }) => (
-    <div data-testid="skeleton" className="flex justify-content-between mb-3">
+    <div className="flex justify-content-between mb-3">
       <span className="text-color font-bold">{caption}</span>
       <span className="text-right ml-2">
         {value() ?? <Skeleton width="3em" />}

@@ -6,7 +6,6 @@ describe("ErrorDialog", () => {
   const errorMessage = "Something went wrong!";
   const onClose = jest.fn();
   const shouldBeVisible = jest.fn();
-  const canBeRetried = true;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -18,7 +17,7 @@ describe("ErrorDialog", () => {
       <ErrorDialog
         shouldBeVisible={shouldBeVisible}
         error={() => errorMessage}
-        canBeRetried={canBeRetried}
+        canBeRetried= {true}
         onClose={onClose}
       />
     );
@@ -54,7 +53,7 @@ describe("ErrorDialog", () => {
       <ErrorDialog
         shouldBeVisible={shouldBeVisible}
         error={() => errorMessage}
-        canBeRetried={canBeRetried}
+        canBeRetried={true}
         onClose={onClose}
       />
     );
