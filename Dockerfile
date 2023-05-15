@@ -2,7 +2,7 @@ FROM --platform=$BUILDPLATFORM node:alpine AS builder
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn .yarn
-RUN --mount=type=cache,target=/root/.yarn/cache yarn install
+RUN --mount=type=cache,target=/root/.yarn/cache yarn workspaces focus --production
 COPY craco.config.js tsconfig.json .env.defaults .env.example ./
 COPY src src
 COPY public public
