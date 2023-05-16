@@ -49,3 +49,11 @@ export function hashUnitSubUnit(unit: number, subunit: number) {
 export function splitUnitSubUnitHash(hash: number): [number, number] {
   return [hash >> 4, hash & 0xf];
 }
+
+export type ViewModelProps<T> = {
+  viewModel: T;
+};
+
+export type MaybeViewModelProps<T> = {
+  viewModel?: undefined
+} | ViewModelProps<T>;

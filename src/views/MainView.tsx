@@ -2,24 +2,15 @@ import { TabPanel, TabView } from "primereact/tabview";
 
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import ILogListStore from "../stores/LogListStore";
-import { useRootStore } from "../stores/RootStore";
-import ISelectedLogsInfoStore from "../stores/SelectedLogsInfoStore";
 import LogFrequencyView from "./tabs/LogFrequencyView";
 import LogListView from "./tabs/LogListView";
 import TimeChartView from "./tabs/TimeChartView";
 import FirmwareChartView from "./tabs/FirmwareChartView";
+import { MaybeViewModelProps, ViewModelProps } from "../utils";
+import { IMainViewViewModel, MainViewViewModel } from "../viewmodels/MainViewViewModel";
 
-type ObserverProps = {
-  logListStore: ILogListStore;
-  selectedLogsInfoStore: ISelectedLogsInfoStore;
-};
-
-const EmptyLogListObserver = observer(
-  ({ logListStore, selectedLogsInfoStore }: ObserverProps) => {
-    const disableTabs =
-      !logListStore.hasLogs ||
-      (selectedLogsInfoStore.info?.total_entries ?? 0) == 0;
+const DisabledTabsObserver = observer(
+  ({ viewModel }: ViewModelProps<IMainViewViewModel>) => {
     return (
       <TabView className="h-full" panelContainerClassName="surface-50">
         <TabPanel
@@ -32,21 +23,21 @@ const EmptyLogListObserver = observer(
         <TabPanel
           header="Entries frequency"
           leftIcon="pi pi-list mr-2"
-          disabled={disableTabs}
+          disabled={viewModel.tabsDisabled()}
         >
           <LogFrequencyView />
         </TabPanel>
         <TabPanel
           header="Time/Occurences Chart"
           leftIcon="pi pi-chart-bar mr-2"
-          disabled={disableTabs}
+          disabled={viewModel.tabsDisabled()}
         >
           <TimeChartView />
         </TabPanel>
         <TabPanel
           header="Firmware/Occurences Chart"
           leftIcon="pi pi-chart-bar mr-2"
-          disabled={disableTabs}
+          disabled={viewModel.tabsDisabled()}
         >
           <FirmwareChartView />
         </TabPanel>
@@ -55,15 +46,14 @@ const EmptyLogListObserver = observer(
   }
 );
 
-const MainView = () => {
-  const { logListStore, selectedLogsInfoStore } = useRootStore();
+const MainView = (props: MaybeViewModelProps<IMainViewViewModel>) => {
+  const viewModel = props.viewModel ?? MainViewViewModel();
   useEffect(() => {
-    logListStore.updateLogList();
+    viewModel.updateLogList();
   });
   return (
-    <EmptyLogListObserver
-      logListStore={logListStore}
-      selectedLogsInfoStore={selectedLogsInfoStore}
+    <DisabledTabsObserver
+      viewModel={viewModel}
     />
   );
 };
