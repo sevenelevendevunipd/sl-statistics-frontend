@@ -2,7 +2,7 @@ import {
   SelectedLogsInfoStore,
   SelectedLogsInfoStoreState,
 } from "../SelectedLogsInfoStore";
-import { LogAggregationAnalysisService } from "../../openapi";
+import { ApiError, LogAggregationAnalysisService } from "../../openapi";
 
 describe("SelectedLogsInfoStore", () => {
   let store: SelectedLogsInfoStore;
@@ -42,22 +42,65 @@ describe("SelectedLogsInfoStore", () => {
     });
 
     it("handles errors", async () => {
-      const mockError = new Error("An error occurred");
-      getApiOverviewSpy.mockRejectedValue(mockError);
+      const errorText = "sampleerrortext";
+      const apiError1 = new ApiError(
+          {
+            method: "PUT",
+            url: "",
+          },
+          {
+            url: "",
+            ok: false,
+            status: 400,
+            statusText: "Bad Request",
+            body: {
+              errors: [errorText],
+            },
+          },
+          ""
+        );
+      const apiError2 = new ApiError(
+          {
+            method: "PUT",
+            url: "",
+          },
+          {
+            url: "",
+            ok: false,
+            status: 400,
+            statusText: "Bad Request",
+            body: {
+              errors: errorText,
+            },
+          },
+          ""
+        );
+      const typeError = new TypeError("Type error occurred");
+      const error = new Error("error message");
 
-      expect(store.state).toEqual(SelectedLogsInfoStoreState.idle);
-      expect(store.hasError).toEqual(false);
-      expect(store.error).toBeUndefined();
-      expect(store.info).toBeUndefined();
-
+      getApiOverviewSpy.mockRejectedValue(apiError1);
       await store.updateOverview(new Date(), new Date());
 
-      expect(store.state).toEqual(SelectedLogsInfoStoreState.error);
       expect(store.hasError).toEqual(true);
-      expect(store.error).toEqual(
-        "Error while getting log file list: Error: An error occurred"
-      );
-      expect(store.info).toBeUndefined();
+      expect(store.error).toEqual("Error while getting log file list: sampleerrortext");
+
+      getApiOverviewSpy.mockRejectedValue(apiError2);
+      await store.updateOverview(new Date(), new Date());
+
+      expect(store.hasError).toEqual(true);
+      expect(store.error).toEqual("Error while getting log file list: {\"errors\":\"sampleerrortext\"}");
+
+      getApiOverviewSpy.mockRejectedValue(typeError);
+      await store.updateOverview(new Date(), new Date());
+
+      expect(store.hasError).toEqual(true);
+      expect(store.error).toEqual("Error while getting log file list: Type error occurred");
+
+      getApiOverviewSpy.mockRejectedValue(error);
+      await store.updateOverview(new Date(), new Date());
+
+      expect(store.hasError).toEqual(true);
+      expect(store.error).toEqual("Error while getting log file list: Error: error message");
     });
   });
 });
