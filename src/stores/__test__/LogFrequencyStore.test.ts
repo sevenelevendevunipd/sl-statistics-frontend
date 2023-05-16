@@ -74,66 +74,77 @@ describe("LogFrequencyStore", () => {
   });
 
   it("should handle errors when updating the entry frequencies", async () => {
-    const postApiFrequencySpy = jest.spyOn(LogAggregationAnalysisService, "postApiFrequency");
+    const postApiFrequencySpy = jest.spyOn(
+      LogAggregationAnalysisService,
+      "postApiFrequency"
+    );
 
     const errorText = "sampleerrortext";
-      const apiError1 = new ApiError(
-          {
-            method: "PUT",
-            url: "",
-          },
-          {
-            url: "",
-            ok: false,
-            status: 400,
-            statusText: "Bad Request",
-            body: {
-              errors: [errorText],
-            },
-          },
-          ""
-        );
-      const apiError2 = new ApiError(
-          {
-            method: "PUT",
-            url: "",
-          },
-          {
-            url: "",
-            ok: false,
-            status: 400,
-            statusText: "Bad Request",
-            body: {
-              errors: errorText,
-            },
-          },
-          ""
-        );
-      const typeError = new TypeError("Type error occurred");
-      const error = new Error("error message");
+    const apiError1 = new ApiError(
+      {
+        method: "PUT",
+        url: "",
+      },
+      {
+        url: "",
+        ok: false,
+        status: 400,
+        statusText: "Bad Request",
+        body: {
+          errors: [errorText],
+        },
+      },
+      ""
+    );
+    const apiError2 = new ApiError(
+      {
+        method: "PUT",
+        url: "",
+      },
+      {
+        url: "",
+        ok: false,
+        status: 400,
+        statusText: "Bad Request",
+        body: {
+          errors: errorText,
+        },
+      },
+      ""
+    );
+    const typeError = new TypeError("Type error occurred");
+    const error = new Error("error message");
 
     postApiFrequencySpy.mockRejectedValueOnce(apiError1);
     await store.updateFrequencies();
 
     expect(store.hasError).toBe(true);
-    expect(store.error).toEqual("Error while getting log file list: sampleerrortext");
+    expect(store.error).toEqual(
+      "Error while getting log file list: sampleerrortext"
+    );
 
     postApiFrequencySpy.mockRejectedValueOnce(apiError2);
     await store.updateFrequencies();
 
     expect(store.hasError).toBe(true);
-    expect(store.error).toEqual("Error while getting log file list: {\"errors\":\"sampleerrortext\"}");
+    expect(store.error).toEqual(
+      'Error while getting log file list: {"errors":"sampleerrortext"}'
+    );
 
     postApiFrequencySpy.mockRejectedValueOnce(typeError);
     await store.updateFrequencies();
 
     expect(store.hasError).toBe(true);
-    expect(store.error).toEqual("Error while getting log file list: Type error occurred");
+    expect(store.error).toEqual(
+      "Error while getting log file list: Type error occurred"
+    );
 
     postApiFrequencySpy.mockRejectedValueOnce(error);
     await store.updateFrequencies();
 
     expect(store.hasError).toBe(true);
-    expect(store.error).toEqual("Error while getting log file list: Error: error message");
+    expect(store.error).toEqual(
+      "Error while getting log file list: Error: error message"
+    );
   });
 });

@@ -75,67 +75,83 @@ describe("FirmwareChartDataStore", () => {
     it("handles errors", async () => {
       const errorText = "sampleerrortext";
       const apiError1 = new ApiError(
-          {
-            method: "PUT",
-            url: "",
+        {
+          method: "PUT",
+          url: "",
+        },
+        {
+          url: "",
+          ok: false,
+          status: 400,
+          statusText: "Bad Request",
+          body: {
+            errors: [errorText],
           },
-          {
-            url: "",
-            ok: false,
-            status: 400,
-            statusText: "Bad Request",
-            body: {
-              errors: [errorText],
-            },
-          },
-          ""
-        );
+        },
+        ""
+      );
       const apiError2 = new ApiError(
-          {
-            method: "PUT",
-            url: "",
+        {
+          method: "PUT",
+          url: "",
+        },
+        {
+          url: "",
+          ok: false,
+          status: 400,
+          statusText: "Bad Request",
+          body: {
+            errors: errorText,
           },
-          {
-            url: "",
-            ok: false,
-            status: 400,
-            statusText: "Bad Request",
-            body: {
-              errors: errorText,
-            },
-          },
-          ""
-        );
+        },
+        ""
+      );
       const typeError = new TypeError("Type error occurred");
       const error = new Error("error message");
-      
+
       postApiChartsFirmwareSpy.mockRejectedValueOnce(apiError1);
       await firmwareChartDataStore.update(new Date(), new Date(), ["v1", "v2"]);
 
       expect(postApiChartsFirmwareSpy).toBeCalled();
-      expect(firmwareChartDataStore.state).toEqual(FirmwareChartStoreState.error);
-      expect(firmwareChartDataStore.error).toEqual("Error while getting log file list: sampleerrortext");
+      expect(firmwareChartDataStore.state).toEqual(
+        FirmwareChartStoreState.error
+      );
+      expect(firmwareChartDataStore.error).toEqual(
+        "Error while getting log file list: sampleerrortext"
+      );
 
       postApiChartsFirmwareSpy.mockRejectedValueOnce(apiError2);
       await firmwareChartDataStore.update(new Date(), new Date(), ["v1", "v2"]);
 
       expect(postApiChartsFirmwareSpy).toBeCalled();
-      expect(firmwareChartDataStore.state).toEqual(FirmwareChartStoreState.error);
-      expect(firmwareChartDataStore.error).toEqual("Error while getting log file list: {\"errors\":\"sampleerrortext\"}");
+      expect(firmwareChartDataStore.state).toEqual(
+        FirmwareChartStoreState.error
+      );
+      expect(firmwareChartDataStore.error).toEqual(
+        'Error while getting log file list: {"errors":"sampleerrortext"}'
+      );
 
       postApiChartsFirmwareSpy.mockRejectedValueOnce(typeError);
       await firmwareChartDataStore.update(new Date(), new Date(), ["v1", "v2"]);
 
       expect(postApiChartsFirmwareSpy).toBeCalled();
-      expect(firmwareChartDataStore.state).toEqual(FirmwareChartStoreState.error);
-      expect(firmwareChartDataStore.error).toEqual("Error while getting log file list: Type error occurred");
+      expect(firmwareChartDataStore.state).toEqual(
+        FirmwareChartStoreState.error
+      );
+      expect(firmwareChartDataStore.error).toEqual(
+        "Error while getting log file list: Type error occurred"
+      );
 
       postApiChartsFirmwareSpy.mockRejectedValueOnce(error);
       await firmwareChartDataStore.update(new Date(), new Date(), ["v1", "v2"]);
 
       expect(postApiChartsFirmwareSpy).toBeCalled();
-      expect(firmwareChartDataStore.state).toEqual(FirmwareChartStoreState.error);
-      expect(firmwareChartDataStore.error).toEqual("Error while getting log file list: Error: error message");
+      expect(firmwareChartDataStore.state).toEqual(
+        FirmwareChartStoreState.error
+      );
+      expect(firmwareChartDataStore.error).toEqual(
+        "Error while getting log file list: Error: error message"
+      );
     });
   });
 });
