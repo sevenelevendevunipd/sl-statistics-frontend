@@ -1,6 +1,6 @@
-import { action, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
 
-import { ChartsService } from "../openapi";
+import { ApiError, ChartsService } from "../openapi";
 
 enum FirmwareChartStoreState {
   idle,
@@ -18,6 +18,21 @@ export default interface IFirmwareChartDataStore {
   data: Record<string, string>[];
 
   update(start: Date, end: Date, allFirmwares: string[]): void;
+  get hasError(): boolean;
+}
+
+function reprError(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.body.errors instanceof Array) {
+      return err.body.errors.join("\n");
+    } else {
+      return JSON.stringify(err.body);
+    }
+  } else if (err instanceof TypeError) {
+    return err.message;
+  } else {
+    return `${err}`;
+  }
 }
 
 export class FirmwareChartDataStore implements IFirmwareChartDataStore {
@@ -36,8 +51,15 @@ export class FirmwareChartDataStore implements IFirmwareChartDataStore {
       selectedCodes: observable,
       selectedFirmwares: observable,
       data: observable,
+      throwError: action.bound,
       update: action.bound,
+      hasError: computed,
     });
+  }
+
+  throwError(err: string) {
+    this.state = FirmwareChartStoreState.error;
+    this.error = err;
   }
 
   update(start: Date, end: Date, allFirmwares: string[]) {
@@ -60,10 +82,16 @@ export class FirmwareChartDataStore implements IFirmwareChartDataStore {
       },
       (err) => {
         runInAction(() => {
-          this.state = FirmwareChartStoreState.error;
+          this.throwError(
+            `Error while getting log file list: ${reprError(err)}`
+          );
         });
-        console.error(err); //TODO: handle
+        console.error(err); //TODO: Controllare gli handle
       }
     );
+  }
+
+  get hasError() {
+    return this.state == FirmwareChartStoreState.error;
   }
 }
