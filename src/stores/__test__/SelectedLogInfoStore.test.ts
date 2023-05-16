@@ -54,7 +54,7 @@ describe("SelectedLogsInfoStore", () => {
 
       expect(store.state).toEqual(SelectedLogsInfoStoreState.error);
       expect(store.hasError).toEqual(true);
-      expect(store.error).toEqual(undefined);
+      expect(store.error).toEqual("Error while getting log file list: Error: An error occurred");
       expect(store.info).toBeUndefined();
     });
   });
