@@ -4,22 +4,19 @@ import { Column, ColumnFilterElementTemplateOptions } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { MultiSelect } from "primereact/multiselect";
 import { ScrollPanel } from "primereact/scrollpanel";
-import { Tree, TreeCheckboxSelectionKeys } from "primereact/tree";
+import { Tree } from "primereact/tree";
 
 import ErrorDialog from "../../components/ErrorDialog";
 import RangePicker from "../../components/RangePicker";
-import ILogFrequencyStore, {
-  allUnitSubunits,
-} from "../../stores/LogFrequencyStore";
-import { useRootStore } from "../../stores/RootStore";
+import { ILogFrequencyViewModel, LogFrequencyViewModel } from "../../viewmodels/tabs/LogFrequencyViewModel";
+import { MaybeViewModelProps, ViewModelProps } from "../../utils";
 
 const TableObserver = observer(
-  ({ logFrequencyStore }: { logFrequencyStore: ILogFrequencyStore }) => {
-    const filterOpts = logFrequencyStore.firmwares;
+  ({ viewModel }: ViewModelProps<ILogFrequencyViewModel>) => {
     const FirmwareFilter = (options: ColumnFilterElementTemplateOptions) => (
       <MultiSelect
         value={options.value}
-        options={filterOpts}
+        options={viewModel.selectableFirmwares()}
         onChange={(e) => options.filterApplyCallback(e.value)}
         optionLabel="name"
         placeholder="Any"
@@ -32,7 +29,7 @@ const TableObserver = observer(
 
     return (
       <DataTable
-        value={logFrequencyStore.entryFrequencies}
+        value={viewModel.entryFrequencies()}
         removableSort
         sortField="count"
         sortOrder={-1}
@@ -62,58 +59,47 @@ const TableObserver = observer(
 );
 
 const SubunitTreeObserver = observer(
-  ({ logFrequencyStore }: { logFrequencyStore: ILogFrequencyStore }) => {
+  ({ viewModel }: ViewModelProps<ILogFrequencyViewModel>) => {
     return (
       <Tree
         selectionMode="checkbox"
-        value={allUnitSubunits}
-        selectionKeys={logFrequencyStore.selectedSubunits}
-        onSelectionChange={(ev) =>
-          logFrequencyStore.setSubunitSelection(
-            ev.value as TreeCheckboxSelectionKeys
-          )
-        }
+        value={viewModel.selectableSubunits}
+        selectionKeys={viewModel.selectedSubunits()}
+        onSelectionChange={viewModel.onSubunitSelectionChange}
       />
     );
   }
 );
 
-const ErrorDialogObserver = observer(
-  ({ logFrequencyStore }: { logFrequencyStore: ILogFrequencyStore }) => (
-    <ErrorDialog
-      shouldBeVisible={() => logFrequencyStore.hasError}
-      canBeRetried={false}
-      error={() => logFrequencyStore.error}
-    />
-  )
-);
-
-const LogFrequencyView = () => {
-  const rootStore = useRootStore();
-  const { filterStateStore, logFrequencyStore } = rootStore;
+const LogFrequencyView = (props: MaybeViewModelProps<ILogFrequencyViewModel>) => {
+  const viewModel = props.viewModel ?? LogFrequencyViewModel();
   return (
     <>
       <div className="grid">
-        <ErrorDialogObserver {...rootStore} />
+        <ErrorDialog
+          shouldBeVisible={viewModel.hasError}
+          canBeRetried={false}
+          error={viewModel.error}
+        />
         <div className="col-9 flex">
           <Card className="m-2 flex-grow-1" title="Entries frequency">
-            <TableObserver {...rootStore} />
+            <TableObserver viewModel={viewModel} />
           </Card>
         </div>
         <div className="col-3 flex flex-column">
           <Card title="Filter by Unit/SubUnit" className="m-2">
             <ScrollPanel style={{ height: "20rem" }}>
-              <SubunitTreeObserver {...rootStore} />
+              <SubunitTreeObserver viewModel={viewModel} />
             </ScrollPanel>
           </Card>
           <RangePicker
             title="Filter by Datetime"
-            minAllowed={() => filterStateStore.selected_min_timestamp}
-            maxAllowed={() => filterStateStore.selected_max_timestamp}
-            minValue={() => logFrequencyStore.selectedMinTimestamp}
-            maxValue={() => logFrequencyStore.selectedMaxTimestamp}
-            onMinChange={logFrequencyStore.setMinTimestamp}
-            onMaxChange={logFrequencyStore.setMaxTimestamp}
+            minAllowed={viewModel.minAllowedTimestamp}
+            maxAllowed={viewModel.maxAllowedTimestamp}
+            minValue={viewModel.minSelectedTimestamp}
+            maxValue={viewModel.maxSelectedTimestamp}
+            onMinChange={viewModel.onMinSelectionChange}
+            onMaxChange={viewModel.onMaxSelectionChange}
             className="flex-grow-1"
           />
         </div>
