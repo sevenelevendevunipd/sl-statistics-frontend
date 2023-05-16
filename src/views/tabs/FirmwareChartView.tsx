@@ -63,13 +63,17 @@ const FirmwareSelectionObserver = observer(
   }
 );
 
-const ErrorDialogObserver = observer(({ chartFilterStore, firmwareChartDataStore }: ChartStore) => (
-  <ErrorDialog
-    shouldBeVisible={() => chartFilterStore.hasError || firmwareChartDataStore.hasError}
-    canBeRetried={false}
-    error={() => chartFilterStore.error || firmwareChartDataStore.error}
-  />
-));
+const ErrorDialogObserver = observer(
+  ({ chartFilterStore, firmwareChartDataStore }: ChartStore) => (
+    <ErrorDialog
+      shouldBeVisible={() =>
+        chartFilterStore.hasError || firmwareChartDataStore.hasError
+      }
+      canBeRetried={false}
+      error={() => chartFilterStore.error || firmwareChartDataStore.error}
+    />
+  )
+);
 
 const FirmwareChartView = () => {
   const rootStore = useRootStore();

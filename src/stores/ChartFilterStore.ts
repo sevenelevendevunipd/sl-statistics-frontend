@@ -1,4 +1,10 @@
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 
 import { ApiError, ChartsService } from "../openapi";
 enum ChartFilterStoreState {
