@@ -87,12 +87,7 @@ export class FirmwareChartDataStore implements IFirmwareChartDataStore {
         });
       },
       (err) => {
-        runInAction(() => {
-          this.throwError(
-            `Error while getting log file list: ${reprError(err)}`
-          );
-        });
-        console.error(err); //TODO: Controllare gli handle
+        this.throwError(`Error while getting log file list: ${reprError(err)}`);
       }
     );
   }
