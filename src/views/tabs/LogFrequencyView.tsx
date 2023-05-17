@@ -6,6 +6,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { Tree, TreeCheckboxSelectionKeys } from "primereact/tree";
 
+import ErrorDialog from "../../components/ErrorDialog";
 import RangePicker from "../../components/RangePicker";
 import ILogFrequencyStore, {
   allUnitSubunits,
@@ -77,12 +78,23 @@ const SubunitTreeObserver = observer(
   }
 );
 
+const ErrorDialogObserver = observer(
+  ({ logFrequencyStore }: { logFrequencyStore: ILogFrequencyStore }) => (
+    <ErrorDialog
+      shouldBeVisible={() => logFrequencyStore.hasError}
+      canBeRetried={false}
+      error={() => logFrequencyStore.error}
+    />
+  )
+);
+
 const LogFrequencyView = () => {
   const rootStore = useRootStore();
   const { filterStateStore, logFrequencyStore } = rootStore;
   return (
     <>
       <div className="grid">
+        <ErrorDialogObserver {...rootStore} />
         <div className="col-9 flex">
           <Card className="m-2 flex-grow-1" title="Entries frequency">
             <TableObserver {...rootStore} />

@@ -11,6 +11,7 @@ import { TreeCheckboxSelectionKeys } from "primereact/tree";
 import TreeNode from "primereact/treenode";
 
 import {
+  ApiError,
   LogAggregationAnalysisService,
   LogFrequency_baae32a_LogFrequencyEntry,
 } from "../openapi";
@@ -72,6 +73,20 @@ function selectAllTreeEntries(entries: TreeNode[]) {
   return selectedEntries;
 }
 
+function reprError(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.body.errors instanceof Array) {
+      return err.body.errors.join("\n");
+    } else {
+      return JSON.stringify(err.body);
+    }
+  } else if (err instanceof TypeError) {
+    return err.message;
+  } else {
+    return `${err}`;
+  }
+}
+
 export class LogFrequencyStore implements ILogFrequencyStore {
   state: LogFrequencyStoreState = LogFrequencyStoreState.idle;
   error: string | undefined;
@@ -91,6 +106,7 @@ export class LogFrequencyStore implements ILogFrequencyStore {
       selectedMinTimestamp: observable,
       selectedMaxTimestamp: observable,
       selectedSubunits: observable,
+      throwError: action.bound,
       setSelectedRange: action.bound,
       setMinTimestamp: action.bound,
       setMaxTimestamp: action.bound,
@@ -109,6 +125,11 @@ export class LogFrequencyStore implements ILogFrequencyStore {
       ],
       this.updateFrequencies
     );
+  }
+
+  throwError(err: string) {
+    this.state = LogFrequencyStoreState.error;
+    this.error = err;
   }
 
   setSelectedRange(min: Date, max: Date) {
@@ -144,10 +165,10 @@ export class LogFrequencyStore implements ILogFrequencyStore {
       },
       (error) => {
         runInAction(() => {
-          this.state = LogFrequencyStoreState.error;
+          this.throwError(
+            `Error while getting log file list: ${reprError(error)}`
+          );
         });
-        //TODO: handle errors.
-        console.log(error);
       }
     );
   }

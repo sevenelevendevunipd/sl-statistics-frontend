@@ -36,8 +36,8 @@ describe("TimeChartDataStore", () => {
     timeChartDataStore.update(new Date(), new Date(), [1, 2, 3]);
   });
 
-  it("update - errror", (done) => {
-    reaction(
+  it("update - errror", async () => {
+    /*reaction(
       () => timeChartDataStore.state,
       (state) => {
         if (state == TimeChartStoreState.error) {
@@ -58,9 +58,74 @@ describe("TimeChartDataStore", () => {
         body: [],
       },
       ""
+    );*/
+
+    const errorText = "sampleerrortext";
+    const apiError1 = new ApiError(
+      {
+        method: "PUT",
+        url: "",
+      },
+      {
+        url: "",
+        ok: false,
+        status: 400,
+        statusText: "Bad Request",
+        body: {
+          errors: [errorText],
+        },
+      },
+      ""
+    );
+    const apiError2 = new ApiError(
+      {
+        method: "PUT",
+        url: "",
+      },
+      {
+        url: "",
+        ok: false,
+        status: 400,
+        statusText: "Bad Request",
+        body: {
+          errors: errorText,
+        },
+      },
+      ""
+    );
+    const typeError = new TypeError("Type error occurred");
+    const error = new Error("error message");
+
+    chartsServiceSpy.mockRejectedValueOnce(apiError1);
+    await timeChartDataStore.update(new Date(), new Date(), [1, 2, 3]);
+
+    expect(timeChartDataStore.hasError).toBe(true);
+    expect(timeChartDataStore.error).toEqual(
+      "Error while getting log file list: sampleerrortext"
+    );
+
+    chartsServiceSpy.mockRejectedValueOnce(apiError2);
+    await timeChartDataStore.update(new Date(), new Date(), [1, 2, 3]);
+
+    expect(timeChartDataStore.hasError).toBe(true);
+    expect(timeChartDataStore.error).toEqual(
+      'Error while getting log file list: {"errors":"sampleerrortext"}'
+    );
+
+    chartsServiceSpy.mockRejectedValueOnce(typeError);
+    await timeChartDataStore.update(new Date(), new Date(), [1, 2, 3]);
+
+    expect(timeChartDataStore.hasError).toBe(true);
+    expect(timeChartDataStore.error).toEqual(
+      "Error while getting log file list: Type error occurred"
     );
 
     chartsServiceSpy.mockRejectedValueOnce(error);
-    timeChartDataStore.update(new Date(), new Date(), [1, 2, 3]);
+    await timeChartDataStore.update(new Date(), new Date(), [1, 2, 3]);
+
+    expect(timeChartDataStore.hasError).toBe(true);
+    expect(timeChartDataStore.error).toEqual(
+      "Error while getting log file list: Error: error message"
+    );
   });
 });

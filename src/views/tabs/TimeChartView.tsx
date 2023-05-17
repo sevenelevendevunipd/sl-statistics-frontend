@@ -5,6 +5,7 @@ import { ListBox } from "primereact/listbox";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { Tree, TreeCheckboxSelectionKeys } from "primereact/tree";
 
+import ErrorDialog from "../../components/ErrorDialog";
 import StackedBarChart from "../../components/StackedBarChart";
 import IChartFilterStore from "../../stores/ChartFilterStore";
 import { useRootStore } from "../../stores/RootStore";
@@ -70,10 +71,23 @@ const CodeSelectionObserver = observer(
   }
 );
 
+const ErrorDialogObserver = observer(
+  ({ timeChartDataStore, chartFilterStore }: ChartStore) => (
+    <ErrorDialog
+      shouldBeVisible={() =>
+        timeChartDataStore.hasError || chartFilterStore.hasError
+      }
+      canBeRetried={false}
+      error={() => timeChartDataStore.error || chartFilterStore.error}
+    />
+  )
+);
+
 const TimeChartView = () => {
   const rootStore = useRootStore();
   return (
     <div className="grid">
+      <ErrorDialogObserver {...rootStore} />
       <div className="col-6">
         <Card title="Filter by subUnit" className="m-2">
           <ScrollPanel style={{ height: "21rem" }}>

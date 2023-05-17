@@ -7,7 +7,7 @@ import {
 } from "mobx";
 import { TreeCheckboxSelectionKeys } from "primereact/tree";
 
-import { ChartsService } from "../openapi";
+import { ApiError, ChartsService } from "../openapi";
 
 export enum TimeChartStoreState {
   idle,
@@ -27,6 +27,21 @@ export default interface ITimeChartDataStore {
   update(start: Date, end: Date, allSubunits: number[]): void;
 
   get selectedSubUnitsList(): number[];
+  get hasError(): boolean;
+}
+
+function reprError(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.body.errors instanceof Array) {
+      return err.body.errors.join("\n");
+    } else {
+      return JSON.stringify(err.body);
+    }
+  } else if (err instanceof TypeError) {
+    return err.message;
+  } else {
+    return `${err}`;
+  }
 }
 
 export class TimeChartDataStore implements ITimeChartDataStore {
@@ -45,9 +60,16 @@ export class TimeChartDataStore implements ITimeChartDataStore {
       selectedCodes: observable,
       selectedSubUnits: observable,
       data: observable,
+      throwError: action.bound,
       update: action.bound,
       selectedSubUnitsList: computed,
+      hasError: computed,
     });
+  }
+
+  throwError(err: string) {
+    this.state = TimeChartStoreState.error;
+    this.error = err;
   }
 
   update(start: Date, end: Date, allSubunits: number[]) {
@@ -70,10 +92,10 @@ export class TimeChartDataStore implements ITimeChartDataStore {
       },
       (err) => {
         runInAction(() => {
-          this.state = TimeChartStoreState.error;
-          //TODO: gestione errori
+          this.throwError(
+            `Error while getting log file list: ${reprError(err)}`
+          );
         });
-        console.error(err);
       }
     );
   }
@@ -84,5 +106,9 @@ export class TimeChartDataStore implements ITimeChartDataStore {
         .filter((k) => k.startsWith("s"))
         .map((k) => parseInt(k.substring(1))),
     ];
+  }
+
+  get hasError() {
+    return this.state == TimeChartStoreState.error;
   }
 }
