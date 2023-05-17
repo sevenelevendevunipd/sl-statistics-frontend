@@ -5,16 +5,21 @@ import { ListBox } from "primereact/listbox";
 import ErrorDialog from "../../components/ErrorDialog";
 import StackedBarChart from "../../components/StackedBarChart";
 import { MaybeViewModelProps, ViewModelProps } from "../../utils";
-import { IFirmwareChartViewModel, FirmwareChartViewModel } from "../../viewmodels/tabs/FirmwareChartViewModel";
+import {
+  IFirmwareChartViewModel,
+  FirmwareChartViewModel,
+} from "../../viewmodels/tabs/FirmwareChartViewModel";
 
-const TimeChartObserver = observer(({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => (
-  <StackedBarChart
-    xKey="firmware"
-    dataset={viewModel.chartData()}
-    isXLabelRotated
-    style={{ height: "40rem" }}
-  />
-));
+const TimeChartObserver = observer(
+  ({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => (
+    <StackedBarChart
+      xKey="firmware"
+      dataset={viewModel.chartData()}
+      isXLabelRotated
+      style={{ height: "40rem" }}
+    />
+  )
+);
 
 const CodeSelectionObserver = observer(
   ({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => {
@@ -57,7 +62,9 @@ const ErrorDialogObserver = observer(
   )
 );
 
-const FirmwareChartView = (props: MaybeViewModelProps<IFirmwareChartViewModel>) => {
+const FirmwareChartView = (
+  props: MaybeViewModelProps<IFirmwareChartViewModel>
+) => {
   const viewModel = props.viewModel ?? FirmwareChartViewModel();
   return (
     <div className="grid">

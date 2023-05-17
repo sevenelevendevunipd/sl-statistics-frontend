@@ -14,14 +14,13 @@ const viewModelFactory = () => ({
 
   hasError: jest.fn(),
   error: jest.fn(),
-})
+});
 
 describe("TimeChartView", () => {
   it("TimeChartView", () => {
-
     const viewModel = viewModelFactory();
     viewModel.chartData.mockReturnValue([]);
-    render(<TimeChartView viewModel={viewModel}/>);
+    render(<TimeChartView viewModel={viewModel} />);
     expect(screen.getByText("Filter by subUnit")).toBeInTheDocument();
     expect(screen.getByText("Filter by Code (max 7)")).toBeInTheDocument();
   });

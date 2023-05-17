@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChartFilterStore } from "../../../stores/ChartFilterStore";
 import { TimeChartDataStore } from "../../../stores/TimeChartDataStore";
-import {
-  ITimeChartViewModel,
-  TimeChartViewModel,
-} from "../TimeChartViewModel";
+import { ITimeChartViewModel, TimeChartViewModel } from "../TimeChartViewModel";
 
 jest.mock("../../../stores/ChartFilterStore");
 jest.mock("../../../stores/TimeChartDataStore");
@@ -55,15 +52,7 @@ describe("TimeChartViewModel", () => {
     });
     describe("7 elements selected", () => {
       beforeEach(() => {
-        timeChartDataStore.selectedCodes = [
-          "a",
-          "b",
-          "c",
-          "d",
-          "e",
-          "f",
-          "g",
-        ];
+        timeChartDataStore.selectedCodes = ["a", "b", "c", "d", "e", "f", "g"];
       });
       it("can't select non selected code", () => {
         expect(viewModel.disableCodeOption("x")).toBe(true);
@@ -90,7 +79,7 @@ describe("TimeChartViewModel", () => {
     expect(subunits[0].children[0].key).toBe("s5");
     expect(subunits[1].key).toBe("1");
     expect(subunits[1].children[0].key).toBe("s16");
-  })
+  });
 
   it("selectedSubunits", () => {
     const selectedSubunits = Symbol() as any;

@@ -7,7 +7,10 @@ import LogListView from "./tabs/LogListView";
 import TimeChartView from "./tabs/TimeChartView";
 import FirmwareChartView from "./tabs/FirmwareChartView";
 import { MaybeViewModelProps, ViewModelProps } from "../utils";
-import { IMainViewViewModel, MainViewViewModel } from "../viewmodels/MainViewViewModel";
+import {
+  IMainViewViewModel,
+  MainViewViewModel,
+} from "../viewmodels/MainViewViewModel";
 
 const DisabledTabsObserver = observer(
   ({ viewModel }: ViewModelProps<IMainViewViewModel>) => {
@@ -51,11 +54,7 @@ const MainView = (props: MaybeViewModelProps<IMainViewViewModel>) => {
   useEffect(() => {
     viewModel.updateLogList();
   });
-  return (
-    <DisabledTabsObserver
-      viewModel={viewModel}
-    />
-  );
+  return <DisabledTabsObserver viewModel={viewModel} />;
 };
 
 export default MainView;

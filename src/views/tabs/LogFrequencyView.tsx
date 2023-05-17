@@ -8,7 +8,10 @@ import { Tree } from "primereact/tree";
 
 import ErrorDialog from "../../components/ErrorDialog";
 import RangePicker from "../../components/RangePicker";
-import { ILogFrequencyViewModel, LogFrequencyViewModel } from "../../viewmodels/tabs/LogFrequencyViewModel";
+import {
+  ILogFrequencyViewModel,
+  LogFrequencyViewModel,
+} from "../../viewmodels/tabs/LogFrequencyViewModel";
 import { MaybeViewModelProps, ViewModelProps } from "../../utils";
 
 const TableObserver = observer(
@@ -71,7 +74,9 @@ const SubunitTreeObserver = observer(
   }
 );
 
-const LogFrequencyView = (props: MaybeViewModelProps<ILogFrequencyViewModel>) => {
+const LogFrequencyView = (
+  props: MaybeViewModelProps<ILogFrequencyViewModel>
+) => {
   const viewModel = props.viewModel ?? LogFrequencyViewModel();
   return (
     <>

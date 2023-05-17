@@ -2,7 +2,6 @@ import { TreeCheckboxSelectionKeys, TreeSelectionEvent } from "primereact/tree";
 import { allUnitSubunits } from "../../stores/LogFrequencyStore";
 import { RootStore, useRootStore } from "../../stores/RootStore";
 
-
 export type ILogFrequencyViewModel = ReturnType<typeof LogFrequencyViewModel>;
 
 export const LogFrequencyViewModel = (rootStore?: RootStore) => {
@@ -20,10 +19,13 @@ export const LogFrequencyViewModel = (rootStore?: RootStore) => {
 
     selectableSubunits: allUnitSubunits,
     selectedSubunits: () => logFrequencyStore.selectedSubunits,
-    onSubunitSelectionChange: (e: TreeSelectionEvent) => logFrequencyStore.setSubunitSelection(e.value as TreeCheckboxSelectionKeys),
+    onSubunitSelectionChange: (e: TreeSelectionEvent) =>
+      logFrequencyStore.setSubunitSelection(
+        e.value as TreeCheckboxSelectionKeys
+      ),
 
     selectableFirmwares: () => logFrequencyStore.firmwares,
 
     entryFrequencies: () => logFrequencyStore.entryFrequencies,
   };
-}
+};

@@ -5,7 +5,8 @@ import { runInAction } from "mobx";
 export type IFirmwareChartViewModel = ReturnType<typeof FirmwareChartViewModel>;
 
 export const FirmwareChartViewModel = (rootStore?: RootStore) => {
-  const { firmwareChartDataStore, chartFilterStore } = rootStore ?? useRootStore();
+  const { firmwareChartDataStore, chartFilterStore } =
+    rootStore ?? useRootStore();
   return {
     chartData: () => firmwareChartDataStore.data,
     selectableCodes: () => chartFilterStore.selectableCodes,
@@ -20,8 +21,9 @@ export const FirmwareChartViewModel = (rootStore?: RootStore) => {
     selectedFirmwares: () => firmwareChartDataStore.selectedFirmwares,
     onFirmwareSelectionChange: (e: ListBoxChangeEvent) =>
       runInAction(() => (firmwareChartDataStore.selectedFirmwares = e.value)),
-    
-    hasError: () => chartFilterStore.hasError || firmwareChartDataStore.hasError,
+
+    hasError: () =>
+      chartFilterStore.hasError || firmwareChartDataStore.hasError,
     error: () => chartFilterStore.error ?? firmwareChartDataStore.error,
   };
 };

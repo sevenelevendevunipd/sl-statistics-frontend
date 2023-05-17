@@ -54,6 +54,8 @@ export type ViewModelProps<T> = {
   viewModel: T;
 };
 
-export type MaybeViewModelProps<T> = {
-  viewModel?: undefined
-} | ViewModelProps<T>;
+export type MaybeViewModelProps<T> =
+  | {
+      viewModel?: undefined;
+    }
+  | ViewModelProps<T>;
