@@ -40,7 +40,7 @@ export const TimeChartViewModel = (rootStore?: RootStore) => {
             e.value as TreeCheckboxSelectionKeys)
       ),
 
-    hasError: () => chartFilterStore.hasError || chartFilterStore.hasError,
-    error: () => chartFilterStore.error ?? chartFilterStore.error,
+    hasError: () => chartFilterStore.hasError || timeChartDataStore.hasError,
+    error: () => chartFilterStore.error ?? timeChartDataStore.error,
   };
 };
