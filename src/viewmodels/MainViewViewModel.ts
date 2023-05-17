@@ -1,9 +1,9 @@
-import { useRootStore } from "../stores/RootStore";
+import { RootStore, useRootStore } from "../stores/RootStore";
 
 export type IMainViewViewModel = ReturnType<typeof MainViewViewModel>;
 
-export const MainViewViewModel = () => {
-  const { logListStore, selectedLogsInfoStore } = useRootStore();
+export const MainViewViewModel = (rootStore?: RootStore) => {
+  const { logListStore, selectedLogsInfoStore } = rootStore ?? useRootStore();
   return {
     updateLogList: () => logListStore.updateLogList(),
     tabsDisabled: () =>

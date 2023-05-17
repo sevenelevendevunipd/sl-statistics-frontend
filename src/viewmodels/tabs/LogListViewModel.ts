@@ -1,13 +1,13 @@
 import { FileUploadHandlerEvent } from "primereact/fileupload";
-import { useRootStore } from "../../stores/RootStore";
+import { RootStore, useRootStore } from "../../stores/RootStore";
 import { LogListStoreState } from "../../stores/LogListStore";
 import { SelectedLogsInfoStoreState } from "../../stores/SelectedLogsInfoStore";
 
 export type ILogListViewModel = ReturnType<typeof LogListViewModel>;
 
-export const LogListViewModel = () => {
+export const LogListViewModel = (rootStore?: RootStore) => {
   const { logListStore, filterStateStore, selectedLogsInfoStore } =
-    useRootStore();
+    rootStore ?? useRootStore();
   return {
     hasError: () => logListStore.hasError || selectedLogsInfoStore.hasError,
     error: () => logListStore.error ?? selectedLogsInfoStore.error,
@@ -29,10 +29,12 @@ export const LogListViewModel = () => {
 
     isListLoading: () => logListStore.state != LogListStoreState.idle,
     logFiles: () => logListStore.logs,
-    deleteFile: (filename: string) => () => logListStore.deleteLogFile(filename),
+    deleteFile: (filename: string) => () =>
+      logListStore.deleteLogFile(filename),
     isLogListEmpty: () => !logListStore.hasLogs,
 
-    isInfoLoading: () => selectedLogsInfoStore.state == SelectedLogsInfoStoreState.loading,
+    isInfoLoading: () =>
+      selectedLogsInfoStore.state == SelectedLogsInfoStoreState.loading,
     totalEntriesCount: () => selectedLogsInfoStore.info?.total_entries,
     avgEntriesCount: () => selectedLogsInfoStore.info?.avg_entries,
     entryStdDev: () => selectedLogsInfoStore.info?.entries_std_dev,

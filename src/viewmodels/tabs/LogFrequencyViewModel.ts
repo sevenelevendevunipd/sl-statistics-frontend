@@ -1,12 +1,12 @@
 import { TreeCheckboxSelectionKeys, TreeSelectionEvent } from "primereact/tree";
 import { allUnitSubunits } from "../../stores/LogFrequencyStore";
-import { useRootStore } from "../../stores/RootStore";
+import { RootStore, useRootStore } from "../../stores/RootStore";
 
 
 export type ILogFrequencyViewModel = ReturnType<typeof LogFrequencyViewModel>;
 
-export const LogFrequencyViewModel = () => {
-  const { logFrequencyStore, filterStateStore } = useRootStore();
+export const LogFrequencyViewModel = (rootStore?: RootStore) => {
+  const { logFrequencyStore, filterStateStore } = rootStore ?? useRootStore();
   return {
     hasError: () => logFrequencyStore.hasError,
     error: () => logFrequencyStore.error,

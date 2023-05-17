@@ -1,13 +1,13 @@
 import { ListBoxChangeEvent } from "primereact/listbox";
-import { useRootStore } from "../../stores/RootStore";
+import { RootStore, useRootStore } from "../../stores/RootStore";
 import { runInAction } from "mobx";
 import { groupBy, hashUnitSubUnit, splitUnitSubUnitHash } from "../../utils";
 import { TreeCheckboxSelectionKeys, TreeSelectionEvent } from "primereact/tree";
 
 export type ITimeChartViewModel = ReturnType<typeof TimeChartViewModel>;
 
-export const TimeChartViewModel = () => {
-  const { timeChartDataStore, chartFilterStore } = useRootStore();
+export const TimeChartViewModel = (rootStore?: RootStore) => {
+  const { timeChartDataStore, chartFilterStore } = rootStore ?? useRootStore();
   return {
     chartData: () => timeChartDataStore.data,
     selectableCodes: () => chartFilterStore.selectableCodes,

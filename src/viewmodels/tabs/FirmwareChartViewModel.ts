@@ -1,11 +1,11 @@
 import { ListBoxChangeEvent } from "primereact/listbox";
-import { useRootStore } from "../../stores/RootStore";
+import { RootStore, useRootStore } from "../../stores/RootStore";
 import { runInAction } from "mobx";
 
 export type IFirmwareChartViewModel = ReturnType<typeof FirmwareChartViewModel>;
 
-export const FirmwareChartViewModel = () => {
-  const { firmwareChartDataStore, chartFilterStore } = useRootStore();
+export const FirmwareChartViewModel = (rootStore?: RootStore) => {
+  const { firmwareChartDataStore, chartFilterStore } = rootStore ?? useRootStore();
   return {
     chartData: () => firmwareChartDataStore.data,
     selectableCodes: () => chartFilterStore.selectableCodes,
