@@ -13,100 +13,77 @@ import ErrorDialog from "../../components/ErrorDialog";
 import InfoRow from "../../components/InfoRow";
 import RangePicker from "../../components/RangePicker";
 import { StoredLogList_c682361_StoredLogFile } from "../../openapi";
-import IFilterStateStore from "../../stores/FilterStateStore";
-import ILogListStore, { LogListStoreState } from "../../stores/LogListStore";
-import { useRootStore } from "../../stores/RootStore";
-import ISelectedLogsInfoStore, {
-  SelectedLogsInfoStoreState,
-} from "../../stores/SelectedLogsInfoStore";
+import { MaybeViewModelProps, ViewModelProps } from "../../utils";
+import {
+  ILogListViewModel,
+  LogListViewModel,
+} from "../../viewmodels/tabs/LogListViewModel";
 
-type ObserverProps = {
-  logListStore: ILogListStore;
-  filterStateStore: IFilterStateStore;
-  selectedLogsInfoStore: ISelectedLogsInfoStore;
-};
+const LogListObserver = observer(
+  ({ viewModel }: ViewModelProps<ILogListViewModel>) => (
+    <DataTable
+      value={viewModel.logFiles()}
+      removableSort
+      sortField="file_name"
+      size="small"
+      responsiveLayout="scroll"
+      paginator
+      paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+      rows={10}
+    >
+      <Column header="File Name" field="file_name" sortable />
+      <Column header="First entry" field="first_entry_timestamp" sortable />
+      <Column header="Last entry" field="last_entry_timestamp" sortable />
+      <Column header="Entry count" field="entry_count" sortable />
+      <Column
+        header="Delete file"
+        body={(entry: StoredLogList_c682361_StoredLogFile) => (
+          <Button
+            severity="danger"
+            icon="pi pi-trash"
+            onClick={() =>
+              confirmDialog({
+                icon: "pi pi-exclamation-triangle",
+                header: "Delete Confirmation",
+                message: (
+                  <span>
+                    Are you sure you want to permanently delete log file
+                    <pre>{entry.file_name}</pre> from the database?
+                  </span>
+                ),
+                acceptClassName: "p-button-danger",
+                accept: viewModel.deleteFile(entry.file_name),
+              })
+            }
+          />
+        )}
+      />
+    </DataTable>
+  )
+);
 
-const LogListObserver = observer(({ logListStore }: ObserverProps) => (
-  <BlockUIObserver
-    shouldBlock={() => logListStore.state != LogListStoreState.idle}
-  >
-    <ErrorDialog
-      shouldBeVisible={() => logListStore.hasError}
-      canBeRetried={() => logListStore.errorCanRetry}
-      onClose={logListStore.updateLogList}
-      error={() => logListStore.error}
-    />
-    <Card className="m-2" title="Uploaded Logs">
-      <DataTable
-        value={logListStore.logs}
-        removableSort
-        sortField="file_name"
-        size="small"
-        responsiveLayout="scroll"
-        paginator
-        paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-        rows={10}
-      >
-        <Column header="File Name" field="file_name" sortable />
-        <Column header="First entry" field="first_entry_timestamp" sortable />
-        <Column header="Last entry" field="last_entry_timestamp" sortable />
-        <Column header="Entry count" field="entry_count" sortable />
-        <Column
-          header="Delete file"
-          body={(entry: StoredLogList_c682361_StoredLogFile) => (
-            <Button
-              severity="danger"
-              icon="pi pi-trash"
-              onClick={() =>
-                confirmDialog({
-                  icon: "pi pi-exclamation-triangle",
-                  header: "Delete Confirmation",
-                  message: (
-                    <span>
-                      Are you sure you want to permanently delete log file
-                      <pre>{entry.file_name}</pre> from the database?
-                    </span>
-                  ),
-                  acceptClassName: "p-button-danger",
-                  accept: () => logListStore.deleteLogFile(entry.file_name),
-                })
-              }
-            />
-          )}
-        />
-      </DataTable>
-    </Card>
-  </BlockUIObserver>
-));
-
-const LogOverviewData = ({ selectedLogsInfoStore }: ObserverProps) => {
-  const info = () => selectedLogsInfoStore.info; // A function call is used to prevent a MobX warning.
+const LogOverviewData = ({ viewModel }: ViewModelProps<ILogListViewModel>) => {
   return (
     <>
-      <ErrorDialog
-        shouldBeVisible={() => selectedLogsInfoStore.hasError}
-        canBeRetried={false}
-        error={() => selectedLogsInfoStore.error}
-      />
-      <InfoRow caption="Total entries" value={() => info()?.total_entries} />
-      <InfoRow caption="Average entries" value={() => info()?.avg_entries} />
+      <InfoRow caption="Total entries" value={viewModel.totalEntriesCount} />
+      <InfoRow caption="Average entries" value={viewModel.avgEntriesCount} />
       <InfoRow
         caption="Entry count standard deviation"
-        value={() => info()?.entries_std_dev}
+        value={viewModel.entryStdDev}
       />
       <InfoRow
         caption="Max count"
         value={() => {
-          const i = info();
+          const maxCountEntry = viewModel.maxCountEntryInfo();
           return (
             <>
-              {i?.max_count_entry.entry_count ?? (
+              {maxCountEntry?.entry_count ?? (
                 <Skeleton width="3em" className="inline-block" />
               )}
               <br />(
-              {i !== undefined ? (
-                <span className="text-sm">{i.max_count_entry.filename}</span>
+              {maxCountEntry !== undefined ? (
+                <span className="text-sm">{maxCountEntry.filename}</span>
               ) : (
                 <Skeleton width="10em" className="inline-block" />
               )}
@@ -119,27 +96,29 @@ const LogOverviewData = ({ selectedLogsInfoStore }: ObserverProps) => {
   );
 };
 
-const LogListView = () => {
-  const rootStore = useRootStore();
-  const { logListStore, filterStateStore } = rootStore;
+const LogListView = (props: MaybeViewModelProps<ILogListViewModel>) => {
+  const viewModel = props.viewModel ?? LogListViewModel();
   return (
     <>
       <ConfirmDialog />
+      <ErrorDialog
+        shouldBeVisible={viewModel.hasError}
+        canBeRetried={viewModel.canBeRetried}
+        error={viewModel.error}
+        onClose={viewModel.onClose}
+      />
       <div className="flex flex-row m-4 justify-content-around">
         <Button
           label="Refresh"
           icon="pi pi-refresh"
-          onClick={logListStore.updateLogList}
+          onClick={viewModel.onLogListRefreshClick}
           severity="help"
         />
         <FileUpload
           name="log"
           accept="text/csv"
           customUpload
-          uploadHandler={(ev) => {
-            logListStore.uploadLogFile(ev.files[0]);
-            ev.options.clear();
-          }}
+          uploadHandler={viewModel.logUploadHandler}
           mode="basic"
           auto
           chooseLabel="Upload a Log"
@@ -151,10 +130,14 @@ const LogListView = () => {
       </div>
       <div className="grid">
         <div className="col-9">
-          <LogListObserver {...rootStore} />
+          <BlockUIObserver shouldBlock={viewModel.isListLoading}>
+            <Card className="m-2" title="Uploaded Logs">
+              <LogListObserver viewModel={viewModel} />
+            </Card>
+          </BlockUIObserver>
         </div>
         <BlockUIObserver
-          shouldBlock={() => !logListStore.hasLogs}
+          shouldBlock={viewModel.isLogListEmpty}
           props={{
             containerClassName: "col-3 flex flex-column",
             template: (
@@ -165,23 +148,20 @@ const LogListView = () => {
         >
           <RangePicker
             title="Filter by Datetime"
-            minAllowed={() => logListStore.minTimestamp}
-            maxAllowed={() => logListStore.maxTimestamp}
-            minValue={() => filterStateStore.selected_min_timestamp}
-            maxValue={() => filterStateStore.selected_max_timestamp}
-            onMinChange={filterStateStore.setMinTimestamp}
-            onMaxChange={filterStateStore.setMaxTimestamp}
+            minAllowed={viewModel.minAllowedTimestamp}
+            maxAllowed={viewModel.maxAllowedTimestamp}
+            minValue={viewModel.minSelectedTimestamp}
+            maxValue={viewModel.maxSelectedTimestamp}
+            onMinChange={viewModel.onMinSelectionChange}
+            onMaxChange={viewModel.onMaxSelectionChange}
           />
 
           <BlockUIObserver
-            shouldBlock={() =>
-              rootStore.selectedLogsInfoStore.state ==
-              SelectedLogsInfoStoreState.loading
-            }
+            shouldBlock={viewModel.isInfoLoading}
             props={{ containerClassName: "flex-grow-1 flex flex-column" }}
           >
             <Card title="Log Overview" className="m-2 flex-grow-1">
-              <LogOverviewData {...rootStore} />
+              <LogOverviewData viewModel={viewModel} />
             </Card>
           </BlockUIObserver>
         </BlockUIObserver>
