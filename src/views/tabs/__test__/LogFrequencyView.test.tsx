@@ -1,17 +1,32 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import LogFrequencyView from "../LogFrequencyView";
-import RootStoreProvider, { RootStore } from "../../../stores/RootStore";
+
+const viewModelFactory = () => ({
+  hasError: jest.fn(),
+  error: jest.fn(),
+
+  minAllowedTimestamp: jest.fn(),
+  maxAllowedTimestamp: jest.fn(),
+  minSelectedTimestamp: jest.fn(),
+  maxSelectedTimestamp: jest.fn(),
+  onMinSelectionChange: jest.fn(),
+  onMaxSelectionChange: jest.fn(),
+
+  selectableSubunits: [],
+  selectedSubunits: jest.fn(),
+  onSubunitSelectionChange: jest.fn(),
+
+  selectableFirmwares: jest.fn(),
+
+  entryFrequencies: jest.fn(),
+});
 
 describe("LogFrequencyView", () => {
   it("LogFrequencyView", () => {
-    const mockedRootStore = new RootStore();
-    const lfv = render(
-      <RootStoreProvider rootStore={mockedRootStore}>
-        <LogFrequencyView />
-      </RootStoreProvider>
-    );
-    expect(lfv.getByText(/Entries frequency/i)).toBeInTheDocument();
-    expect(lfv.getByText(/Filter by Unit\/SubUnit/i)).toBeInTheDocument();
-    expect(lfv.getByText(/Filter by Datetime/i)).toBeInTheDocument();
+    const viewModel = viewModelFactory();
+    render(<LogFrequencyView viewModel={viewModel} />);
+    expect(screen.getByText(/Entries frequency/i)).toBeInTheDocument();
+    expect(screen.getByText(/Filter by Unit\/SubUnit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Filter by Datetime/i)).toBeInTheDocument();
   });
 });

@@ -1,43 +1,36 @@
-import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import { Card } from "primereact/card";
 import { ListBox } from "primereact/listbox";
 
 import ErrorDialog from "../../components/ErrorDialog";
 import StackedBarChart from "../../components/StackedBarChart";
-import IChartFilterStore from "../../stores/ChartFilterStore";
-import { useRootStore } from "../../stores/RootStore";
-import IFirmwareChartDataStore from "../../stores/FirmwareChartDataStore";
+import { MaybeViewModelProps, ViewModelProps } from "../../utils";
+import {
+  IFirmwareChartViewModel,
+  FirmwareChartViewModel,
+} from "../../viewmodels/tabs/FirmwareChartViewModel";
 
-type ChartStore = {
-  firmwareChartDataStore: IFirmwareChartDataStore;
-  chartFilterStore: IChartFilterStore;
-};
-
-const TimeChartObserver = observer(({ firmwareChartDataStore }: ChartStore) => (
-  <StackedBarChart
-    xKey="firmware"
-    dataset={firmwareChartDataStore.data}
-    isXLabelRotated
-    style={{ height: "40rem" }}
-  />
-));
+const TimeChartObserver = observer(
+  ({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => (
+    <StackedBarChart
+      xKey="firmware"
+      dataset={viewModel.chartData()}
+      isXLabelRotated
+      style={{ height: "40rem" }}
+    />
+  )
+);
 
 const CodeSelectionObserver = observer(
-  ({ firmwareChartDataStore, chartFilterStore }: ChartStore) => {
+  ({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => {
     return (
       <ListBox
-        options={chartFilterStore.selectableCodes}
+        options={viewModel.selectableCodes()}
         multiple
         filter
-        value={firmwareChartDataStore.selectedCodes}
-        optionDisabled={(opt) =>
-          firmwareChartDataStore.selectedCodes.length >= 7 &&
-          !firmwareChartDataStore.selectedCodes.includes(opt)
-        }
-        onChange={(e) =>
-          runInAction(() => (firmwareChartDataStore.selectedCodes = e.value))
-        }
+        value={viewModel.selectedCodes()}
+        optionDisabled={viewModel.disableCodeOption}
+        onChange={viewModel.onCodeSelectionChange}
         listStyle={{ height: "16rem" }}
       />
     );
@@ -45,18 +38,14 @@ const CodeSelectionObserver = observer(
 );
 
 const FirmwareSelectionObserver = observer(
-  ({ firmwareChartDataStore, chartFilterStore }: ChartStore) => {
+  ({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => {
     return (
       <ListBox
-        options={chartFilterStore.selectableFirmwares}
+        options={viewModel.selectableFirmwares()}
         multiple
         filter
-        value={firmwareChartDataStore.selectedFirmwares}
-        onChange={(e) =>
-          runInAction(
-            () => (firmwareChartDataStore.selectedFirmwares = e.value)
-          )
-        }
+        value={viewModel.selectedFirmwares()}
+        onChange={viewModel.onFirmwareSelectionChange}
         listStyle={{ height: "16rem" }}
       />
     );
@@ -64,35 +53,35 @@ const FirmwareSelectionObserver = observer(
 );
 
 const ErrorDialogObserver = observer(
-  ({ chartFilterStore, firmwareChartDataStore }: ChartStore) => (
+  ({ viewModel }: ViewModelProps<IFirmwareChartViewModel>) => (
     <ErrorDialog
-      shouldBeVisible={() =>
-        chartFilterStore.hasError || firmwareChartDataStore.hasError
-      }
+      shouldBeVisible={viewModel.hasError}
       canBeRetried={false}
-      error={() => chartFilterStore.error || firmwareChartDataStore.error}
+      error={viewModel.error}
     />
   )
 );
 
-const FirmwareChartView = () => {
-  const rootStore = useRootStore();
+const FirmwareChartView = (
+  props: MaybeViewModelProps<IFirmwareChartViewModel>
+) => {
+  const viewModel = props.viewModel ?? FirmwareChartViewModel();
   return (
     <div className="grid">
-      <ErrorDialogObserver {...rootStore} />
+      <ErrorDialogObserver viewModel={viewModel} />
       <div className="col-6">
         <Card title="Filter by Firmware" className="m-2">
-          <FirmwareSelectionObserver {...rootStore} />
+          <FirmwareSelectionObserver viewModel={viewModel} />
         </Card>
       </div>
       <div className="col-6 flex">
         <Card title="Filter by Code (max 7)" className="m-2 flex-grow-1">
-          <CodeSelectionObserver {...rootStore} />
+          <CodeSelectionObserver viewModel={viewModel} />
         </Card>
       </div>
       <div className="col-12">
         <Card title="Chart" className="m-2">
-          <TimeChartObserver {...rootStore} />
+          <TimeChartObserver viewModel={viewModel} />
         </Card>
       </div>
     </div>

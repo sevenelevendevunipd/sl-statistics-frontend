@@ -1,16 +1,27 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import FirmwareChartView from "../FirmwareChartView";
-import RootStoreProvider, { RootStore } from "../../../stores/RootStore";
+
+const viewModelFactory = () => ({
+  chartData: jest.fn(),
+  selectableCodes: jest.fn(),
+  selectedCodes: jest.fn(),
+  disableCodeOption: jest.fn(),
+  onCodeSelectionChange: jest.fn(),
+
+  selectableFirmwares: jest.fn(),
+  selectedFirmwares: jest.fn(),
+  onFirmwareSelectionChange: jest.fn(),
+
+  hasError: jest.fn(),
+  error: jest.fn(),
+});
 
 describe("FirmwareChartView", () => {
   it("FirmwareChartView", () => {
-    const mockedRootStore = new RootStore();
-    const fcv = render(
-      <RootStoreProvider rootStore={mockedRootStore}>
-        <FirmwareChartView />
-      </RootStoreProvider>
-    );
-    expect(fcv.getByText(/Filter by Firmware/i)).toBeInTheDocument();
-    expect(fcv.getByText(/Filter by Code \(max 7\)/i)).toBeInTheDocument();
+    const viewModel = viewModelFactory();
+    viewModel.chartData.mockReturnValue([]);
+    render(<FirmwareChartView viewModel={viewModel} />);
+    expect(screen.getByText(/Filter by Firmware/i)).toBeInTheDocument();
+    expect(screen.getByText(/Filter by Code \(max 7\)/i)).toBeInTheDocument();
   });
 });
