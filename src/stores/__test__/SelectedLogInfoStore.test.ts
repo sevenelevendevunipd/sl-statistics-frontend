@@ -8,7 +8,7 @@ describe("SelectedLogsInfoStore", () => {
   let store: SelectedLogsInfoStore;
   const getApiOverviewSpy = jest.spyOn(
     LogAggregationAnalysisService,
-    "getApiOverview"
+    "getApiAggregationOverview"
   );
 
   beforeEach(() => {

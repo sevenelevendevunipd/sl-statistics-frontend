@@ -65,7 +65,7 @@ describe("LogFrequencyStore", () => {
     ];
 
     jest
-      .spyOn(LogAggregationAnalysisService, "postApiFrequency")
+      .spyOn(LogAggregationAnalysisService, "postApiAggregationFrequency")
       .mockResolvedValue({ entries: entry });
 
     await store.updateFrequencies();
@@ -76,7 +76,7 @@ describe("LogFrequencyStore", () => {
   it("should handle errors when updating the entry frequencies", async () => {
     const postApiFrequencySpy = jest.spyOn(
       LogAggregationAnalysisService,
-      "postApiFrequency"
+      "postApiAggregationFrequency"
     );
 
     const errorText = "sampleerrortext";
