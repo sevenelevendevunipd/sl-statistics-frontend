@@ -18,13 +18,13 @@ export class LogAggregationAnalysisService {
      * @returns LogOverview_91de17a OK
      * @throws ApiError
      */
-    public static getApiOverview(
+    public static getApiAggregationOverview(
         start: string,
         end: string,
     ): CancelablePromise<LogOverview_91de17a> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/overview',
+            url: '/api/aggregation/overview',
             query: {
                 'start': start,
                 'end': end,
@@ -41,12 +41,12 @@ export class LogAggregationAnalysisService {
      * @returns LogFrequency_baae32a OK
      * @throws ApiError
      */
-    public static postApiFrequency(
+    public static postApiAggregationFrequency(
         requestBody?: LogFrequencyParams_1d29c35,
     ): CancelablePromise<LogFrequency_baae32a> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/frequency',
+            url: '/api/aggregation/frequency',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

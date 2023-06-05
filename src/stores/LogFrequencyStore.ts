@@ -152,7 +152,7 @@ export class LogFrequencyStore implements ILogFrequencyStore {
   updateFrequencies() {
     this.error = undefined;
     this.state = LogFrequencyStoreState.waiting;
-    LogAggregationAnalysisService.postApiFrequency({
+    LogAggregationAnalysisService.postApiAggregationFrequency({
       start: this.selectedMinTimestamp.toISOString(),
       end: this.selectedMaxTimestamp.toISOString(),
       selected_subunits: this.selectedSubunitIds,

@@ -69,7 +69,7 @@ export class SelectedLogsInfoStore implements ISelectedLogsInfoStore {
   updateOverview(start: Date, end: Date) {
     this.error = undefined;
     this.state = SelectedLogsInfoStoreState.loading;
-    LogAggregationAnalysisService.getApiOverview(
+    LogAggregationAnalysisService.getApiAggregationOverview(
       start.toISOString(),
       end.toISOString()
     ).then(
